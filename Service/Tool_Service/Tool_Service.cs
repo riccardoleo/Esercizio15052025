@@ -4,6 +4,8 @@ using Esercizio15052025.Models;
 using Esercizio15052025.Repository.Tool_Repo.Interfaces;
 using Esercizio15052025.Service.Check_Service;
 using Esercizio15052025.Service.Tool_Service.Interfeces;
+using Esercizio20052025.DTO.Tool_DTO;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Esercizio15052025.Service.Tool_Service
 {
@@ -15,74 +17,159 @@ namespace Esercizio15052025.Service.Tool_Service
 
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-        public async Task<List<T_DTO>> GetAllAsync(int index, int block, int userID)
+        /// <summary>
+        /// Questo servizio ritorna un oggetto contenente una List Tool_DTO con tutti gli tool esistenti
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="block"></param>
+        /// <param name="userID"></param>
+        /// <returns></returns>
+        public async Task<ToolDTO_Response> GetAllAsync(int index, int block, int userID)
         {
-
+            ToolDTO_Response result = new ToolDTO_Response();
+            
             if (index == 0 || block == 0)
             {
                 Logger.Error("0 non e' un numero valido");
-                throw new InvalidOperationException("0 non e' un numero valido");
+                result.success = 0;
+                result.message = ("🚠🥀 0 non e' un numero valido");
+                return result;
             }
 
-            var entity = await _repo.GetAllAsync();
+            List<Tool> entity = await _repo.GetAllAsync();
 
-            var result = entity.Skip((index - 1) * block).Take(block).ToList();
+            if(entity.Count == 0)
+            {
+                Logger.Error("nessun Tool trovato");
+                result.success = 404;
+                result.message = ("💔 nessun utente trovato");
+                return result;
+            }
+            
+            result.tools = _mapper.Map<List<T_DTO>>(entity.Skip((index - 1) * block).Take(block).ToList());
+            result.success = 200;
+            result.message = ("🔥 lista tools ottenuta con successo");
 
-            return _mapper.Map<List<T_DTO>>(result);
+            return result;
         }
 
-        public async Task<List<T_DTO>> GetAllToolsByUserAsync(int userID, int index, int block)
+        /// <summary>
+        /// Ritorna tutti i tools associati all'utente
+        /// </summary>
+        /// <param name="userID"></param>
+        /// <param name="index"></param>
+        /// <param name="block"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        public async Task<ToolDTO_Response> GetAllToolsByUserAsync(int userID, int index, int block)
         {
-            if (index <= 0 || block <= 0)
-            {
-                Logger.Error("Index e block devono essere > 0");
-                throw new InvalidOperationException("Index e block non validi");
-            }
+            ToolDTO_Response result = new ToolDTO_Response();
 
             var entities = await _repo.GetAllToolsByUserAsync(userID, index, block);
 
-            return _mapper.Map<List<T_DTO>>(entities);
+            if (entities == null)
+            {
+                Logger.Warn("L'Id inserito non e' valido");
+                result.success = 204;
+                result.message = ("🚠🥀 L'Id inserito non e' valido");
+                return result;
+            }
+            
+            result.success = 200;
+            result.tools = _mapper.Map<List<T_DTO>>(entities);
+            result.message = ("🔥 List tool trovata con successo");
+
+            return result;
         }
-        public async Task<T_DTO?> GetByIdAsync(int id, int userID)
+        
+        /// <summary>
+        /// ritorna un Tool associato all'utente
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="userID"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        public async Task<ToolDTO_Response?> GetByIdAsync(int id, int userID)
         {
+            ToolDTO_Response result = new ToolDTO_Response();
+
             if (!await _repo.IsToolOwnedByUserAsync(id, userID))
             {
-                Logger.Error("Il tool non e' associato a questo utente");
-                throw new InvalidOperationException("Tool non disponibile");
+                Logger.Warn("Il tool non e' associato a questo utente");
+                result.success = 404;
+                result.message = ("💔 plant component non trovato");
+                return result;            
             }
 
+            if (id == 0 || id == null)
+            {
+                Logger.Warn("L'Id inserito non e' valido");
+                result.success = 0;
+                result.message = ("🚠🥀 ID inserito non valido");
+                return result;
+            }
+            
             var entity = await _repo.GetByIdAsync(id);
 
             if (entity == null)
             {
-                Logger.Error("L'Id inserito non e' valido");
-                throw new InvalidOperationException("L'Id inserito non e' valido");
+                Logger.Warn("Il tool non e' associato a questo utente");
+                result.success = 404;
+                result.message = ("💔 plant component non trovato");
+                return result;            
             }
 
-            return _mapper.Map<T_DTO>(entity);
+            result.tool_DTO = _mapper.Map<T_DTO>(entity);
+            result.success = 200;
+            result.message = ("🔥 Tool trovato con successo");
+
+            return result;
         }
 
-        public async Task AddAsync(T_DTO dto)
+        public async Task<ToolDTO_Response> AddAsync(T_DTO dto)
         {
-            Check_if_Null.CheckString(dto.Name);
-            //Check_if_Null.CheckString(dto.CreatedByUserId);
+            ToolDTO_Response result = new ToolDTO_Response();
 
+            if (dto.Name.IsNullOrEmpty())
+            {
+                Logger.Warn("Dati tool non validi");
+                result.success = 204;
+                result.message = ("🚠🥀 Dati tool non validi");
+                return result;
+            }
+            
             if (_repo.ExistsByName(dto.Name))
             {
-                Logger.Error("Il nome e' gia' esistente");
-                throw new InvalidOperationException("Il nome è già esistente");
+                Logger.Warn("Il nome e' gia' esistente");
+                result.success = 0;
+                result.message = ("🚠🥀 name inserito gia' esistente");
+                return result;            
             }
 
+            var entity = _mapper.Map<Tool>(dto);
+            
             if (dto.CreationDate == DateTime.MinValue)
                 dto.CreationDate = DateTime.Now;
-
-            var entity = _mapper.Map<Tool>(dto);
+            
             await _repo.AddAsync(entity);
+            
+            result.success = 200;
+            result.tool_DTO = dto;
+            result.message = ("🔥 Tool aggiunto con successo");
+            return result;
         }
 
-        public Task UpdateAsync(T_DTO_Update dto)
+        public Task<ToolDTO_Response> UpdateAsync(T_DTO_Update dto)
         {
-            Check_if_Null.CheckString(dto.Name);
+            ToolDTO_Response result = new ToolDTO_Response();
+
+            if (dto.Name.IsNullOrEmpty())
+            {
+                Logger.Warn("Name tool non validi");
+                result.success = 204;
+                result.message = ("🚠🥀 Dati tool non validi");
+                return result;
+            }
             Check_if_Null.CheckInt(dto.ToolId);
             //Check_if_Null.CheckString(dto.CreatedByUserName);
 
@@ -90,8 +177,10 @@ namespace Esercizio15052025.Service.Tool_Service
             return _repo.UpdateAsync(entity);
         }
 
-        public Task DeleteAsync(T_DTO_Delete dto)
+        public Task<ToolDTO_Response> DeleteAsync(T_DTO_Delete dto)
         {
+            ToolDTO_Response result = new ToolDTO_Response();
+
             Check_if_Null.CheckInt(dto.ToolId);
 
             var entity = _mapper.Map<Tool>(dto);

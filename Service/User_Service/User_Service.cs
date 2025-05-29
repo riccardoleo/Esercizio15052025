@@ -21,7 +21,7 @@ namespace Esercizio20052025.Service.User_Service
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         /// <summary>
-        /// Questo servizio ritorna un oggetto contenente una <List<User_DTO>> con tutti gli user esistenti
+        /// Questo servizio ritorna un oggetto contenente una List User_DTO con tutti gli user esistenti
         /// </summary>
         /// <param name="index"></param>
         /// <param name="block"></param>
@@ -44,7 +44,7 @@ namespace Esercizio20052025.Service.User_Service
             {
                 Logger.Error("nessun utente trovato");
                 result.success = 404;
-                result.message = ("💔​ nessun utente trovato");
+                result.message = ("💔 nessun utente trovato");
                 return result;
             }
 
@@ -101,7 +101,7 @@ namespace Esercizio20052025.Service.User_Service
             {
                 Logger.Warn("Dati utente non validi");
                 result.success = 204;
-                result.message = ("🚠🥀​ Dati utente non validi");
+                result.message = ("🚠🥀 Dati utente non validi");
                 return result;
             }
 
@@ -109,7 +109,7 @@ namespace Esercizio20052025.Service.User_Service
             {
                 Logger.Warn("Utente non trovato");
                 result.success = 404;
-                result.message = ("💔​ Utente non trovato");
+                result.message = ("💔 Utente non trovato");
                 return result;
             }
 
@@ -162,7 +162,7 @@ namespace Esercizio20052025.Service.User_Service
             {
                 Logger.Warn("Dati utente non validi");
                 result.success = 204;
-                result.message = ("🚠🥀​ Dati utente non validi");
+                result.message = ("🚠🥀 Dati utente non validi");
                 return result;
             }
 
@@ -212,7 +212,7 @@ namespace Esercizio20052025.Service.User_Service
             {
                 Logger.Warn("Dati utente non validi");
                 result.success = 204;
-                result.message = ("🚠🥀​ Dati utente non validi");
+                result.message = ("🚠🥀 Dati utente non validi");
                 return result;
             }
 
@@ -249,7 +249,7 @@ namespace Esercizio20052025.Service.User_Service
             {
                 Logger.Warn("Dati utente non validi");
                 result.success = 204;
-                result.message = ("🚠🥀​ Dati utente non validi");
+                result.message = ("🚠🥀 Dati utente non validi");
                 return result;
             }
 
@@ -284,7 +284,7 @@ namespace Esercizio20052025.Service.User_Service
             {
                 Logger.Warn("Dati utente non validi");
                 result.success = 204;
-                result.message = ("🚠🥀​ Dati utente non validi");
+                result.message = ("🚠🥀 Dati utente non validi");
                 return result;
             }
 
@@ -292,7 +292,7 @@ namespace Esercizio20052025.Service.User_Service
             {
                 Logger.Warn("Utente non trovato");
                 result.success = 404;
-                result.message = ("💔​ Utente non trovato");
+                result.message = ("💔 Utente non trovato");
                 return result;
             }
 
@@ -320,7 +320,7 @@ namespace Esercizio20052025.Service.User_Service
             {
                 Logger.Warn("Dati utente non validi");
                 result.success = 204;
-                result.message = ("🚠🥀​ Dati utente non validi");
+                result.message = ("🚠🥀 Dati utente non validi");
                 return result;
             }
 

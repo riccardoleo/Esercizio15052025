@@ -9,8 +9,8 @@ namespace Esercizio20052025.DTO.Tool_DTO
         /// </summary>
         public int success;
         public int? UserId;
-        public T_DTO? user_DTO;
-        public List<T_DTO>? users;
+        public T_DTO? tool_DTO;
+        public List<T_DTO>? tools;
         public string? message;
     }
 }

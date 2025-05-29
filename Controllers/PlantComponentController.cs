@@ -19,7 +19,7 @@ namespace Esercizio15052025.Controllers
 
 
 
-        // ▀▄▀▄▀▄  CHIAMATE ADMIN 👑​  ▄▀▄▀▄▀ //
+        // ▀▄▀▄▀▄  CHIAMATE ADMIN 👑  ▄▀▄▀▄▀ //
 
         [Authorize(Roles = "admin")]
         [HttpGet("getAllAdmin/{index}/{block}")]
@@ -40,7 +40,7 @@ namespace Esercizio15052025.Controllers
 
 
 
-        // ▀▄▀▄▀▄  CHIAMATE Utente 👍​  ▄▀▄▀▄▀ //
+        // ▀▄▀▄▀▄  CHIAMATE Utente 👍  ▄▀▄▀▄▀ //
 
         [Authorize]
         [HttpGet("getall/{index}/{block}")]

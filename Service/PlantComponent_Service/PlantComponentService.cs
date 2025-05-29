@@ -45,7 +45,7 @@ namespace Esercizio15052025.Service.PlantComponent_Service
             {
                 Logger.Warn("nessun utente trovato");
                 result.success = 404;
-                result.message = ("💔​ nessun utente trovato");
+                result.message = ("💔 nessun utente trovato");
                 return result;
             }
 
@@ -98,7 +98,7 @@ namespace Esercizio15052025.Service.PlantComponent_Service
             {
                 Logger.Warn("Il tool non e' associato a questo utente");
                 result.success = 404;
-                result.message = ("💔​ plant component non trovato");
+                result.message = ("💔 plant component non trovato");
                 return result;
             }
 
@@ -114,9 +114,9 @@ namespace Esercizio15052025.Service.PlantComponent_Service
 
             if (entity == null)
             {
-                Logger.Warn("Il tool non e' associato a questo utente");
+                Logger.Warn("Il plant component non e' associato a questo utente");
                 result.success = 404;
-                result.message = ("💔​ plant component non trovato");
+                result.message = ("💔 plant component non trovato");
                 return result;
             }
 
@@ -135,7 +135,7 @@ namespace Esercizio15052025.Service.PlantComponent_Service
             {
                 Logger.Warn("Dati plant component non validi");
                 result.success = 204;
-                result.message = ("🚠🥀​ Dati plant component non validi");
+                result.message = ("🚠🥀 Dati plant component non validi");
                 return result;
             } 
 
@@ -162,7 +162,7 @@ namespace Esercizio15052025.Service.PlantComponent_Service
             {
                 Logger.Warn("Name plant component non validi");
                 result.success = 204;
-                result.message = ("🚠🥀​ Dati plant component non validi");
+                result.message = ("🚠🥀 Dati plant component non validi");
                 return result;
             }
 
@@ -170,7 +170,7 @@ namespace Esercizio15052025.Service.PlantComponent_Service
             {
                 Logger.Warn("ID plant component non validi");
                 result.success = 204;
-                result.message = ("🚠🥀​ Dati plant component non validi");
+                result.message = ("🚠🥀 Dati plant component non validi");
                 return result;
             }
 
