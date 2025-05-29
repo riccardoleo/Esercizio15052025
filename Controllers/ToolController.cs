@@ -1,5 +1,7 @@
 ﻿using Esercizio15052025.DTO.Tool_DTO;
 using Esercizio15052025.Service.Tool_Service.Interfeces;
+using Esercizio20052025.DTO.Tool_DTO;
+using Esercizio20052025.DTO.Users_DTO;
 using Esercizio20052025.Service.User_Service.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,67 +21,120 @@ namespace Esercizio15052025.Controllers
             _userService = user_Service;
         }
 
+        
+        
+        // ▀▄▀▄▀▄  CHIAMATE ADMIN 👑  ▄▀▄▀▄▀ //
+        
         [Authorize(Roles = "admin")]
         [HttpGet("getallAdmin/{index}/{block}")]
-        public async Task<IActionResult> GetAllAdmin(int index, int block, string username)
+        public async Task<IActionResult> GetAllAdmin(int index, int block)
         {
-            int userID = _userService.UserIDFromUserName(username);
-            var entity = await _toolService.GetAllAsync(index, block, userID);
+            ToolDTO_Response result = new ToolDTO_Response();
+            
+            result = await _toolService.GetAllAsync(index, block);
 
-            if (entity.Count == 0)
-                return NoContent();
-
-            return Ok(entity);
+            return result.success switch
+            {
+                200 => Ok(result),
+                204 => NoContent(),
+                404 => NotFound(result),
+                _ => BadRequest(result),
+            };
         }
+
+
+
+        // ▀▄▀▄▀▄  CHIAMATE Utente 👍  ▄▀▄▀▄▀ //
 
         //[Authorize]
         [HttpGet("getall/{index}/{block}")]
         public async Task<IActionResult> GetAll(int index, int block, string username)
         {
-            int userID = _userService.UserIDFromUserName(username);
-            var entity = await _toolService.GetAllToolsByUserAsync(userID, index, block);
+            ToolDTO_Response result = new ToolDTO_Response();
+            UserResponseDTO userResponseDTO = new UserResponseDTO();
+            
+            userResponseDTO = _userService.UserIDFromUserName(username);
+            result = await _toolService.GetAllToolsByUserAsync((int)userResponseDTO.UserId, index, block);
 
-            if (entity.Count == 0)
-                return NoContent();
-
-            return Ok(entity);
+            return result.success switch
+            {
+                200 => Ok(result),
+                204 => NoContent(),
+                404 => NotFound(result),
+                _ => BadRequest(result),
+            };
         }
 
         [Authorize]
         [HttpGet("getsingle/{Id}")]
         public async Task<IActionResult> ShowSingle(int Id, string username)
         {
-            int userID = _userService.UserIDFromUserName(username);
-            var entity = await _toolService.GetByIdAsync(Id, userID);
-            return Ok(entity);
+            ToolDTO_Response result = new ToolDTO_Response();
+            UserResponseDTO userResponseDTO = new UserResponseDTO();
+            
+            userResponseDTO = _userService.UserIDFromUserName(username);
+            result = await _toolService.GetByIdAsync(Id, (int)userResponseDTO.UserId);
+            return result.success switch
+            {
+                200 => Ok(result),
+                204 => NoContent(),
+                404 => NotFound(result),
+                _ => BadRequest(result),
+            };
         }
 
         [Authorize]
         [HttpPost("create")]
         public async Task<IActionResult> Create([FromBody] T_DTO dto, string username)
         {
-            int userID = _userService.UserIDFromUserName(username);
-            dto.CreatedByUserId = userID;
+            ToolDTO_Response result = new ToolDTO_Response();
+            UserResponseDTO userResponseDTO = new UserResponseDTO();
+            
+            userResponseDTO = _userService.UserIDFromUserName(username);
+            dto.CreatedByUserId = userResponseDTO.UserId;
             await _toolService.AddAsync(dto);
-            return Ok("Creato con successo");
+            return result.success switch
+            {
+                200 => Ok(result),
+                204 => NoContent(),
+                404 => NotFound(result),
+                _ => BadRequest(result),
+            };
         }
 
         [Authorize]
         [HttpPost("update")]
         public async Task<IActionResult> Update([FromBody] T_DTO_Update dto, string username)
         {
-            int userID = _userService.UserIDFromUserName(username);
-            dto.CreatedByUserId = userID;
+            ToolDTO_Response result = new ToolDTO_Response();
+            UserResponseDTO userResponseDTO = new UserResponseDTO();
+            
+            userResponseDTO = _userService.UserIDFromUserName(username);
+            dto.CreatedByUserId = userResponseDTO.UserId;
             await _toolService.UpdateAsync(dto);
-            return Ok("Aggiornato con successo");
+            return result.success switch
+            {
+                200 => Ok(result),
+                204 => NoContent(),
+                404 => NotFound(result),
+                _ => BadRequest(result),
+            };
         }
 
         [Authorize]
         [HttpDelete("delete")]
         public async Task<IActionResult> Delete([FromBody] T_DTO_Delete dto)
         {
-            await _toolService.DeleteAsync(dto);
-            return Ok("Eliminato con successo");
+            ToolDTO_Response result = new ToolDTO_Response();
+
+            result = await _toolService.DeleteAsync(dto);
+            return result.success switch
+            {
+                200 => Ok(result),
+                204 => NoContent(),
+                404 => NotFound(result),
+                _ => BadRequest(result),
+            };
         }
     }
 }

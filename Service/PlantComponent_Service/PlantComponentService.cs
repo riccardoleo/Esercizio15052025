@@ -196,7 +196,7 @@ namespace Esercizio15052025.Service.PlantComponent_Service
             {
                 Logger.Warn("ID plant component non validi");
                 result.success = 204;
-                result.message = ("🚠🥀​ Dati plant component non validi");
+                result.message = ("🚠🥀 Dati plant component non validi");
                 return result;
             }
 

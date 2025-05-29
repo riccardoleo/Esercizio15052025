@@ -5,12 +5,12 @@ namespace Esercizio15052025.Service.ToolsCategory_Service.Interfaces
 {
     public interface IToolCategory_Service
     {
-        Task<List<TC_DTO>> GetAllAsync(int index, int block);
-        Task<TC_DTO?> GetByIdAsync(int id, int userID);
-        Task AddAsync(TC_DTO entity);
-        Task UpdateAsync(TC_DTO_Update entity);
-        Task DeleteAsync(TC_DTO_Delete entity);
-        Task<List<TC_DTO>> GetAllToolCategoriesByUserAsync(int userID, int index, int block);
+        Task<ToolCategoryDTO_Response> GetAllAsync(int index, int block);
+        Task<ToolCategoryDTO_Response?> GetByIdAsync(int id, int userID);
+        Task<ToolCategoryDTO_Response> AddAsync(TC_DTO entity);
+        Task<ToolCategoryDTO_Response> UpdateAsync(TC_DTO_Update entity);
+        Task<ToolCategoryDTO_Response> DeleteAsync(TC_DTO_Delete entity);
+        Task<ToolCategoryDTO_Response> GetAllToolCategoriesByUserAsync(int userID, int index, int block);
 
     }
 }

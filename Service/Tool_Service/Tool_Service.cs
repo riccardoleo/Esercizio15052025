@@ -24,7 +24,7 @@ namespace Esercizio15052025.Service.Tool_Service
         /// <param name="block"></param>
         /// <param name="userID"></param>
         /// <returns></returns>
-        public async Task<ToolDTO_Response> GetAllAsync(int index, int block, int userID)
+        public async Task<ToolDTO_Response> GetAllAsync(int index, int block)
         {
             ToolDTO_Response result = new ToolDTO_Response();
             
@@ -42,7 +42,7 @@ namespace Esercizio15052025.Service.Tool_Service
             {
                 Logger.Error("nessun Tool trovato");
                 result.success = 404;
-                result.message = ("💔 nessun utente trovato");
+                result.message = ("💔 nessun Tool trovato");
                 return result;
             }
             
@@ -65,6 +65,14 @@ namespace Esercizio15052025.Service.Tool_Service
         {
             ToolDTO_Response result = new ToolDTO_Response();
 
+            if (index == 0 || block == 0)
+            {
+                Logger.Warn("index o block inserito non e' valido");
+                result.success = 0;
+                result.message = ("🚠🥀 index o block inserito non valido");
+                return result;
+            }
+            
             var entities = await _repo.GetAllToolsByUserAsync(userID, index, block);
 
             if (entities == null)
@@ -97,7 +105,7 @@ namespace Esercizio15052025.Service.Tool_Service
             {
                 Logger.Warn("Il tool non e' associato a questo utente");
                 result.success = 404;
-                result.message = ("💔 plant component non trovato");
+                result.message = ("💔 tool non trovato");
                 return result;            
             }
 
@@ -115,7 +123,7 @@ namespace Esercizio15052025.Service.Tool_Service
             {
                 Logger.Warn("Il tool non e' associato a questo utente");
                 result.success = 404;
-                result.message = ("💔 plant component non trovato");
+                result.message = ("💔 tool non trovato");
                 return result;            
             }
 
@@ -126,6 +134,11 @@ namespace Esercizio15052025.Service.Tool_Service
             return result;
         }
 
+        /// <summary>
+        /// Aggiunge un Tool al database
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
         public async Task<ToolDTO_Response> AddAsync(T_DTO dto)
         {
             ToolDTO_Response result = new ToolDTO_Response();
@@ -159,10 +172,25 @@ namespace Esercizio15052025.Service.Tool_Service
             return result;
         }
 
-        public Task<ToolDTO_Response> UpdateAsync(T_DTO_Update dto)
+        /// <summary>
+        /// Aggiorna i dati del Tool e li restituisce
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        public async Task<ToolDTO_Response> UpdateAsync(T_DTO_Update dto)
         {
             ToolDTO_Response result = new ToolDTO_Response();
 
+            var Tool = await _repo.GetByIdAsync(dto.ToolId);
+            
+            if (Tool.Name != dto.Name && _repo.ExistsByName(dto.Name))
+            {
+                Logger.Warn("Il nome e' gia' esistente");
+                result.success = 0;
+                result.message = ("🚠🥀 name inserito gia' esistente");
+                return result;            
+            }
+            
             if (dto.Name.IsNullOrEmpty())
             {
                 Logger.Warn("Name tool non validi");
@@ -170,21 +198,48 @@ namespace Esercizio15052025.Service.Tool_Service
                 result.message = ("🚠🥀 Dati tool non validi");
                 return result;
             }
-            Check_if_Null.CheckInt(dto.ToolId);
-            //Check_if_Null.CheckString(dto.CreatedByUserName);
-
+            
+            if (dto.ToolId == 0)
+            {
+                Logger.Warn("Name tool non validi");
+                result.success = 204;
+                result.message = ("🚠🥀 Dati tool non validi");
+                return result;
+            }
+            
             var entity = _mapper.Map<Tool>(dto);
-            return _repo.UpdateAsync(entity);
+            await _repo.UpdateAsync(entity);
+            
+            result.success = 200;
+            result.tool_DTO = _mapper.Map<T_DTO>(dto);
+            result.message = ("🔥 Tool aggiornato con successo");
+            return result;
         }
 
-        public Task<ToolDTO_Response> DeleteAsync(T_DTO_Delete dto)
+        /// <summary>
+        /// Elimina i dati del Tool e li restituisce
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        public async Task<ToolDTO_Response> DeleteAsync(T_DTO_Delete dto)
         {
             ToolDTO_Response result = new ToolDTO_Response();
 
-            Check_if_Null.CheckInt(dto.ToolId);
+            if (dto.ToolId == 0)
+            {
+                Logger.Warn("ID tool non validi");
+                result.success = 204;
+                result.message = ("🚠🥀 Dati tool non validi");
+                return result;
+            }
 
             var entity = _mapper.Map<Tool>(dto);
-            return _repo.DeleteAsync(entity);
+            await _repo.DeleteAsync(entity);
+
+            result.success = 200;
+            result.tool_DTO = _mapper.Map<T_DTO>(dto);
+            result.message = ("🔥 tool eliminato con successo");
+            return result;
         }
 
 
