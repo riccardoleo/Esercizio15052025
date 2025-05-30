@@ -21,7 +21,7 @@ namespace Esercizio20052025.Service.User_Service
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         /// <summary>
-        /// Questo servizio ritorna un oggetto contenente una List User_DTO con tutti gli user esistenti
+        /// [US01] Questo servizio ritorna un oggetto contenente una List User_DTO con tutti gli user esistenti
         /// </summary>
         /// <param name="index"></param>
         /// <param name="block"></param>
@@ -32,9 +32,9 @@ namespace Esercizio20052025.Service.User_Service
 
             if (index == 0 || block == 0)
             {
-                Logger.Error("0 non e' un numero valido");
+                Logger.Error("[US01A1] 0 non e' un numero valido");
                 result.success = 0;
-                result.message = ("🚠🥀 0 non e' un numero valido");
+                result.message = ("[US01A1] 🚠🥀 0 non e' un numero valido");
                 return result;
             }
 
@@ -42,9 +42,9 @@ namespace Esercizio20052025.Service.User_Service
 
             if(entity.Count == 0)
             {
-                Logger.Error("nessun utente trovato");
+                Logger.Error("[US01A2] nessun utente trovato");
                 result.success = 404;
-                result.message = ("💔 nessun utente trovato");
+                result.message = ("[US01A2] 💔 nessun utente trovato");
                 return result;
             }
 
@@ -63,7 +63,7 @@ namespace Esercizio20052025.Service.User_Service
         }
 
         /// <summary>
-        /// Questo servizio ritorna un oggetto contenente un User_DTO con l'ID associato
+        /// [US02] Questo servizio ritorna un oggetto contenente un User_DTO con l'ID associato
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -75,9 +75,9 @@ namespace Esercizio20052025.Service.User_Service
 
             if (entity == null)
             {
-                Logger.Error("L'Id inserito non e' valido");
+                Logger.Error("[US02A3] L'Id inserito non e' valido");
                 result.success = 204;
-                result.message = ("🚠🥀 L'Id inserito non e' valido");
+                result.message = ("[US0A3] 🚠🥀 L'Id inserito non e' valido");
                 return result;
             }
 
@@ -89,7 +89,7 @@ namespace Esercizio20052025.Service.User_Service
         }
 
         /// <summary>
-        /// Questo servizio controlla le credenziali dell'utente e resituisce il token JWT
+        /// [US03] Questo servizio controlla le credenziali dell'utente e resituisce il token JWT
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
@@ -99,17 +99,17 @@ namespace Esercizio20052025.Service.User_Service
 
             if (dto == null)
             {
-                Logger.Warn("Dati utente non validi");
+                Logger.Warn("[US03A3] Dati utente non validi");
                 result.success = 204;
-                result.message = ("🚠🥀 Dati utente non validi");
+                result.message = ("[US03A3] 🚠🥀 Dati utente non validi");
                 return result;
             }
 
             if (!_repo.ExistsByNameBool(dto.Username))
             {
-                Logger.Warn("Utente non trovato");
+                Logger.Warn("[US03A2] Utente non trovato");
                 result.success = 404;
-                result.message = ("💔 Utente non trovato");
+                result.message = ("[US03A2] 💔 Utente non trovato");
                 return result;
             }
 
@@ -117,9 +117,9 @@ namespace Esercizio20052025.Service.User_Service
 
             if (!BCrypt.Net.BCrypt.Verify(dto.PasswordHash, userInDb.PasswordHash))
             {
-                Logger.Warn("La password è errata");
+                Logger.Warn("[US03A4] La password è errata");
                 result.success = 0;
-                result.message = ("🚠🥀 Dati utente non validi");
+                result.message = ("[US03A4] 🚠🥀 Dati utente non validi");
                 return result;
             }
 
@@ -150,7 +150,7 @@ namespace Esercizio20052025.Service.User_Service
         }
 
         /// <summary>
-        /// Questo servizio registra l'utente e restituisce solo la risposta http e il messaggio
+        /// [US04] Questo servizio registra l'utente e restituisce solo la risposta http e il messaggio
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
@@ -160,17 +160,17 @@ namespace Esercizio20052025.Service.User_Service
 
             if (dto == null)
             {
-                Logger.Warn("Dati utente non validi");
+                Logger.Warn("[US04A3] Dati utente non validi");
                 result.success = 204;
-                result.message = ("🚠🥀 Dati utente non validi");
+                result.message = ("[US04A3] 🚠🥀 Dati utente non validi");
                 return result;
             }
 
             if (_repo.ExistsByNameBool(dto.Username))
             {
-                Logger.Warn("Il nome è già esistente");
+                Logger.Warn("[US04A5] Il nome è già esistente");
                 result.success = 0;
-                result.message = ("🚠🥀 Il nome è già esistente");
+                result.message = ("[US04A5] 🚠🥀 Il nome è già esistente");
                 return result;
             }
 
@@ -181,7 +181,13 @@ namespace Esercizio20052025.Service.User_Service
 
             dto.PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.PasswordHash);
 
-            Check_if_Null.CheckString(dto.Username);
+            if (dto.Username.IsNullOrEmpty())
+            {
+                Logger.Warn("[US04A3] Dati utente non validi");
+                result.success = 204;
+                result.message = ("[US04A3] 🚠🥀 Dati utente non validi");
+                return result;
+            }
 
             var entity = _mapper.Map<User>(dto);
 
@@ -200,7 +206,7 @@ namespace Esercizio20052025.Service.User_Service
         }
 
         /// <summary>
-        /// Aggiorna i dati dell'utente e li restituisce
+        /// [US05] Aggiorna i dati dell'utente e li restituisce
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
@@ -208,20 +214,20 @@ namespace Esercizio20052025.Service.User_Service
         {
             UserResponseDTO result = new UserResponseDTO();
 
-            if (dto.Username == null)
+            if (dto.Username.IsNullOrEmpty())
             {
-                Logger.Warn("Dati utente non validi");
+                Logger.Warn("[US05A3] Dati utente non validi");
                 result.success = 204;
-                result.message = ("🚠🥀 Dati utente non validi");
+                result.message = ("[US05A3] 🚠🥀 Dati utente non validi");
                 return result;
             }
 
             var userInDb = _repo.ReturnUserByName(dto.Username);
             if (!BCrypt.Net.BCrypt.Verify(dto.PasswordHash, userInDb.PasswordHash))
             {
-                Logger.Warn("La password è errata");
+                Logger.Warn("[US05A4] La password è errata");
                 result.success = 0;
-                result.message = ("🚠🥀 Dati utente non validi");
+                result.message = ("[US05A4] 🚠🥀 Dati utente non validi");
                 return result;
             }
 
@@ -237,7 +243,7 @@ namespace Esercizio20052025.Service.User_Service
 
 
         /// <summary>
-        /// Elimina l'utente dal database
+        /// [US06] Elimina l'utente dal database
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
@@ -247,18 +253,18 @@ namespace Esercizio20052025.Service.User_Service
 
             if (dto.Username == null)
             {
-                Logger.Warn("Dati utente non validi");
+                Logger.Warn("[US06A3] Dati utente non validi");
                 result.success = 204;
-                result.message = ("🚠🥀 Dati utente non validi");
+                result.message = ("[US06A3] 🚠🥀 Dati utente non validi");
                 return result;
             }
 
             var userInDb = _repo.ReturnUserByName(dto.Username);
             if (!BCrypt.Net.BCrypt.Verify(dto.PasswordHash, userInDb.PasswordHash))
             {
-                Logger.Warn("La password è errata");
+                Logger.Warn("[US06A4] La password è errata");
                 result.success = 0;
-                result.message = ("🚠🥀 Dati utente non validi");
+                result.message = ("[US06A4] 🚠🥀 Dati utente non validi");
                 return result;
             }
 
@@ -272,7 +278,7 @@ namespace Esercizio20052025.Service.User_Service
         }
 
         /// <summary>
-        /// usando l'username dell'utente restituisce l'ID
+        /// [US07] usando l'username dell'utente restituisce l'ID
         /// </summary>
         /// <param name="username"></param>
         /// <returns></returns>
@@ -282,17 +288,17 @@ namespace Esercizio20052025.Service.User_Service
 
             if (username == null)
             {
-                Logger.Warn("Dati utente non validi");
+                Logger.Warn("[US07A4] Dati utente non validi");
                 result.success = 204;
-                result.message = ("🚠🥀 Dati utente non validi");
+                result.message = ("[US07A4] 🚠🥀 Dati utente non validi");
                 return result;
             }
 
             if (!_repo.ExistsByNameBool(username))
             {
-                Logger.Warn("Utente non trovato");
+                Logger.Warn("[US07A2] Utente non trovato");
                 result.success = 404;
-                result.message = ("💔 Utente non trovato");
+                result.message = ("[US07A2] 💔 Utente non trovato");
                 return result;
             }
 
@@ -306,7 +312,7 @@ namespace Esercizio20052025.Service.User_Service
         }
 
         /// <summary>
-        /// Controlla che ruolo ha l'utente
+        /// [US08] Controlla che ruolo ha l'utente
         /// </summary>
         /// <param name="userRole"></param>
         /// <returns></returns>
@@ -318,9 +324,9 @@ namespace Esercizio20052025.Service.User_Service
 
             if(userRole == null)
             {
-                Logger.Warn("Dati utente non validi");
+                Logger.Warn("[US08A3] Dati utente non validi");
                 result.success = 204;
-                result.message = ("🚠🥀 Dati utente non validi");
+                result.message = ("[US08A3] 🚠🥀 Dati utente non validi");
                 return result;
             }
 
@@ -330,6 +336,7 @@ namespace Esercizio20052025.Service.User_Service
                 result.success = 200;
                 result.message = ("🔥 L'utente e' admin");
                 return result;
+                
             }else if(userRole.ToLower() == "user")
             {
                 result.UserRole = "user";
@@ -338,7 +345,7 @@ namespace Esercizio20052025.Service.User_Service
                 return result;
             }
 
-            Logger.Error("il ruolo ricevuto non e' accettabile");
+            Logger.Error("[US08A6] il ruolo ricevuto non e' accettabile");
             result.success = 0;
             result.message = ("🚠🥀 Ruolo utente non valido");
             return result;

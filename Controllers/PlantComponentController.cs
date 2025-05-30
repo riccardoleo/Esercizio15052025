@@ -8,8 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Esercizio15052025.Controllers
 {
-    // [Route("plantComponent/[controller]")]
-
+    
     [Route("plantComponent")]
     public class PlantComponentController(IPlantComponentService pcService, IUser_Service user_Service) : Controller
     {

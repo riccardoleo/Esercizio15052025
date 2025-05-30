@@ -18,7 +18,7 @@ namespace Esercizio15052025.Service.Tool_Service
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         /// <summary>
-        /// Questo servizio ritorna un oggetto contenente una List Tool_DTO con tutti gli tool esistenti
+        /// [TS01] Questo servizio ritorna un oggetto contenente una List Tool_DTO con tutti gli tool esistenti
         /// </summary>
         /// <param name="index"></param>
         /// <param name="block"></param>
@@ -30,9 +30,9 @@ namespace Esercizio15052025.Service.Tool_Service
             
             if (index == 0 || block == 0)
             {
-                Logger.Error("0 non e' un numero valido");
+                Logger.Error("[TS01A1] 0 non e' un numero valido");
                 result.success = 0;
-                result.message = ("🚠🥀 0 non e' un numero valido");
+                result.message = ("[TS01A1] 🚠🥀 0 non e' un numero valido");
                 return result;
             }
 
@@ -40,9 +40,9 @@ namespace Esercizio15052025.Service.Tool_Service
 
             if(entity.Count == 0)
             {
-                Logger.Error("nessun Tool trovato");
+                Logger.Error("[TS01A2] nessun Tool trovato");
                 result.success = 404;
-                result.message = ("💔 nessun Tool trovato");
+                result.message = ("[TS01A2] 💔 nessun Tool trovato");
                 return result;
             }
             
@@ -54,7 +54,7 @@ namespace Esercizio15052025.Service.Tool_Service
         }
 
         /// <summary>
-        /// Ritorna tutti i tools associati all'utente
+        /// [TS02] Ritorna tutti i tools associati all'utente
         /// </summary>
         /// <param name="userID"></param>
         /// <param name="index"></param>
@@ -67,9 +67,9 @@ namespace Esercizio15052025.Service.Tool_Service
 
             if (index == 0 || block == 0)
             {
-                Logger.Warn("index o block inserito non e' valido");
+                Logger.Warn("[TS02A1] index o block inserito non e' valido");
                 result.success = 0;
-                result.message = ("🚠🥀 index o block inserito non valido");
+                result.message = ("[TS02A1] 🚠🥀 index o block inserito non valido");
                 return result;
             }
             
@@ -77,9 +77,9 @@ namespace Esercizio15052025.Service.Tool_Service
 
             if (entities == null)
             {
-                Logger.Warn("L'Id inserito non e' valido");
+                Logger.Warn("[TS02A3] L'Id inserito non e' valido");
                 result.success = 204;
-                result.message = ("🚠🥀 L'Id inserito non e' valido");
+                result.message = ("[TS02A3] 🚠🥀 L'Id inserito non e' valido");
                 return result;
             }
             
@@ -91,7 +91,7 @@ namespace Esercizio15052025.Service.Tool_Service
         }
         
         /// <summary>
-        /// ritorna un Tool associato all'utente
+        /// [TS03] ritorna un Tool associato all'utente
         /// </summary>
         /// <param name="id"></param>
         /// <param name="userID"></param>
@@ -103,17 +103,17 @@ namespace Esercizio15052025.Service.Tool_Service
 
             if (!await _repo.IsToolOwnedByUserAsync(id, userID))
             {
-                Logger.Warn("Il tool non e' associato a questo utente");
+                Logger.Warn("[TS03A7] Il tool non e' associato a questo utente");
                 result.success = 404;
-                result.message = ("💔 tool non trovato");
+                result.message = ("[TS03A7] 💔 tool non trovato");
                 return result;            
             }
 
-            if (id == 0 || id == null)
+            if (id == 0)
             {
-                Logger.Warn("L'Id inserito non e' valido");
+                Logger.Warn("[TS03A1] L'Id inserito non e' valido");
                 result.success = 0;
-                result.message = ("🚠🥀 ID inserito non valido");
+                result.message = ("[TS03A1] 🚠🥀 ID inserito non valido");
                 return result;
             }
             
@@ -121,9 +121,9 @@ namespace Esercizio15052025.Service.Tool_Service
 
             if (entity == null)
             {
-                Logger.Warn("Il tool non e' associato a questo utente");
+                Logger.Warn("[TS03A2] Il tool non e' stato trovato nel db");
                 result.success = 404;
-                result.message = ("💔 tool non trovato");
+                result.message = ("[TS03A2] 💔 tool non trovato");
                 return result;            
             }
 
@@ -135,7 +135,7 @@ namespace Esercizio15052025.Service.Tool_Service
         }
 
         /// <summary>
-        /// Aggiunge un Tool al database
+        /// [TS04] Aggiunge un Tool al database
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
@@ -145,17 +145,17 @@ namespace Esercizio15052025.Service.Tool_Service
 
             if (dto.Name.IsNullOrEmpty())
             {
-                Logger.Warn("Dati tool non validi");
+                Logger.Warn("[TS04A3] Dati tool non validi");
                 result.success = 204;
-                result.message = ("🚠🥀 Dati tool non validi");
+                result.message = ("[TS04A3] 🚠🥀 Dati tool non validi");
                 return result;
             }
             
             if (_repo.ExistsByName(dto.Name))
             {
-                Logger.Warn("Il nome e' gia' esistente");
+                Logger.Warn("[TS04A5] Il nome e' gia' esistente");
                 result.success = 0;
-                result.message = ("🚠🥀 name inserito gia' esistente");
+                result.message = ("[TS04A5] 🚠🥀 name inserito gia' esistente");
                 return result;            
             }
 
@@ -173,7 +173,7 @@ namespace Esercizio15052025.Service.Tool_Service
         }
 
         /// <summary>
-        /// Aggiorna i dati del Tool e li restituisce
+        /// [TS05] Aggiorna i dati del Tool e li restituisce
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
@@ -185,25 +185,25 @@ namespace Esercizio15052025.Service.Tool_Service
             
             if (Tool.Name != dto.Name && _repo.ExistsByName(dto.Name))
             {
-                Logger.Warn("Il nome e' gia' esistente");
+                Logger.Warn("[TS05A5] Il nome e' gia' esistente");
                 result.success = 0;
-                result.message = ("🚠🥀 name inserito gia' esistente");
+                result.message = ("[TS05A5] 🚠🥀 name inserito gia' esistente");
                 return result;            
             }
             
             if (dto.Name.IsNullOrEmpty())
             {
-                Logger.Warn("Name tool non validi");
+                Logger.Warn("[TS05A3] Name tool non validi");
                 result.success = 204;
-                result.message = ("🚠🥀 Dati tool non validi");
+                result.message = ("[TS05A3] 🚠🥀 Dati tool non validi");
                 return result;
             }
             
             if (dto.ToolId == 0)
             {
-                Logger.Warn("Name tool non validi");
+                Logger.Warn("[TS05A1] Name tool non validi");
                 result.success = 204;
-                result.message = ("🚠🥀 Dati tool non validi");
+                result.message = ("[TS05A1] 🚠🥀 Dati tool non validi");
                 return result;
             }
             
@@ -217,7 +217,7 @@ namespace Esercizio15052025.Service.Tool_Service
         }
 
         /// <summary>
-        /// Elimina i dati del Tool e li restituisce
+        /// [TS06] Elimina i dati del Tool e li restituisce
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
@@ -227,9 +227,9 @@ namespace Esercizio15052025.Service.Tool_Service
 
             if (dto.ToolId == 0)
             {
-                Logger.Warn("ID tool non validi");
+                Logger.Warn("[TS06A1] ID tool non validi");
                 result.success = 204;
-                result.message = ("🚠🥀 Dati tool non validi");
+                result.message = ("[TS06A1] 🚠🥀 Dati tool non validi");
                 return result;
             }
 

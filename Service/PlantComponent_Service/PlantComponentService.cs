@@ -22,7 +22,7 @@ namespace Esercizio15052025.Service.PlantComponent_Service
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         /// <summary>
-        /// Ritorna la lista di tutti i plant component esistenti
+        /// [PC01] Ritorna la lista di tutti i plant component esistenti
         /// </summary>
         /// <param name="index"></param>
         /// <param name="block"></param>
@@ -33,9 +33,9 @@ namespace Esercizio15052025.Service.PlantComponent_Service
 
             if (index == 0 || block == 0)
             {
-                Logger.Warn("0 non e' un numero valido");
+                Logger.Warn("[PC01A1] 0 non e' un numero valido");
                 result.success = 0;
-                result.message = ("🚠🥀 0 non e' un numero valido");
+                result.message = ("[PC01A1] 🚠🥀 0 non e' un numero valido");
                 return result;
             }
 
@@ -43,9 +43,9 @@ namespace Esercizio15052025.Service.PlantComponent_Service
 
             if (entity.Count == 0)
             {
-                Logger.Warn("nessun utente trovato");
+                Logger.Warn("[PC01A2] nessun utente trovato");
                 result.success = 404;
-                result.message = ("💔 nessun utente trovato");
+                result.message = ("[PC01A2] 💔 nessun utente trovato");
                 return result;
             }
 
@@ -57,7 +57,7 @@ namespace Esercizio15052025.Service.PlantComponent_Service
         }
 
         /// <summary>
-        /// Ritorna tutti i plant component associati all'utente
+        /// [PC02] Ritorna tutti i plant component associati all'utente
         /// </summary>
         /// <param name="userID"></param>
         /// <param name="index"></param>
@@ -71,9 +71,9 @@ namespace Esercizio15052025.Service.PlantComponent_Service
 
             if (entities == null)
             {
-                Logger.Warn("L'Id inserito non e' valido");
+                Logger.Warn("[PC02A3] L'Id inserito non e' valido");
                 result.success = 204;
-                result.message = ("🚠🥀 L'Id inserito non e' valido");
+                result.message = ("[PC02A3] 🚠🥀 L'Id inserito non e' valido");
                 return result;
             }
 
@@ -85,7 +85,7 @@ namespace Esercizio15052025.Service.PlantComponent_Service
         }
 
         /// <summary>
-        /// ritorna un plant component associato all'utente
+        /// [PC03] ritorna un plant component associato all'utente
         /// </summary>
         /// <param name="id"></param>
         /// <param name="userID"></param>
@@ -96,17 +96,17 @@ namespace Esercizio15052025.Service.PlantComponent_Service
 
             if (!await _repo.IsPlantComponentOwnedByUserAsync(id, userID))
             {
-                Logger.Warn("Il tool non e' associato a questo utente");
+                Logger.Warn("[PC03A2] Il tool non e' associato a questo utente");
                 result.success = 404;
-                result.message = ("💔 plant component non trovato");
+                result.message = ("[PC03A2] 💔 plant component non trovato");
                 return result;
             }
 
-            if (id == 0 || id == null)
+            if (id == 0)
             {
-                Logger.Warn("L'Id inserito non e' valido");
+                Logger.Warn("[PC03A1] L'Id inserito non e' valido");
                 result.success = 0;
-                result.message = ("🚠🥀 ID inserito non valido");
+                result.message = ("[PC03A1] 🚠🥀 ID inserito non valido");
                 return result;
             }
 
@@ -114,9 +114,9 @@ namespace Esercizio15052025.Service.PlantComponent_Service
 
             if (entity == null)
             {
-                Logger.Warn("Il plant component non e' associato a questo utente");
+                Logger.Warn("[PC03A2] Il plant component non e' associato a questo utente");
                 result.success = 404;
-                result.message = ("💔 plant component non trovato");
+                result.message = ("[PC03A2] 💔 plant component non trovato");
                 return result;
             }
 
@@ -127,15 +127,20 @@ namespace Esercizio15052025.Service.PlantComponent_Service
             return result;
         }
 
+        /// <summary>
+        /// [PC04] aggiunge un Plant Component al database
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
         public async Task<PlantComponent_Response> AddAsync(PC_DTO dto)
         {
             PlantComponent_Response result = new PlantComponent_Response();
 
             if (dto.Name.IsNullOrEmpty())
             {
-                Logger.Warn("Dati plant component non validi");
+                Logger.Warn("[PC04A3] Dati plant component non validi");
                 result.success = 204;
-                result.message = ("🚠🥀 Dati plant component non validi");
+                result.message = ("[PC04A3] 🚠🥀 Dati plant component non validi");
                 return result;
             } 
 
@@ -150,7 +155,7 @@ namespace Esercizio15052025.Service.PlantComponent_Service
         }
 
         /// <summary>
-        /// Aggiorna i dati del plant component e li restituisce
+        /// [PC05] Aggiorna i dati del plant component e li restituisce
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
@@ -160,17 +165,17 @@ namespace Esercizio15052025.Service.PlantComponent_Service
 
             if (dto.Name.IsNullOrEmpty())
             {
-                Logger.Warn("Name plant component non validi");
+                Logger.Warn("[PC05A3] Name plant component non validi");
                 result.success = 204;
-                result.message = ("🚠🥀 Dati plant component non validi");
+                result.message = ("[PC05A3] 🚠🥀 Dati plant component non validi");
                 return result;
             }
 
             if(dto.ComponentId == 0)
             {
-                Logger.Warn("ID plant component non validi");
+                Logger.Warn("[PC05A1] ID plant component non validi");
                 result.success = 204;
-                result.message = ("🚠🥀 Dati plant component non validi");
+                result.message = ("[PC05A1] 🚠🥀 Dati plant component non validi");
                 return result;
             }
 
@@ -184,7 +189,7 @@ namespace Esercizio15052025.Service.PlantComponent_Service
         }
 
         /// <summary>
-        /// Elimina i dati del plant component e li restituisce 
+        /// [PC06] Elimina i dati del plant component e li restituisce 
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
@@ -194,9 +199,9 @@ namespace Esercizio15052025.Service.PlantComponent_Service
 
             if (dto.ComponentId == 0)
             {
-                Logger.Warn("ID plant component non validi");
+                Logger.Warn("[PC06A1] ID plant component non validi");
                 result.success = 204;
-                result.message = ("🚠🥀 Dati plant component non validi");
+                result.message = ("[PC06A1] 🚠🥀 Dati plant component non validi");
                 return result;
             }
 
