@@ -1,0 +1,22 @@
+2025-05-30 11:01:51.5548 Info Registered target NLog.Targets.FileTarget(Name=allfile)
+2025-05-30 11:01:51.5647 Info Registered target NLog.Targets.FileTarget(Name=ownFile-web)
+2025-05-30 11:01:51.5651 Info Registered target NLog.Targets.ConsoleTarget(Name=lifetimeConsole)
+2025-05-30 11:01:51.5688 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.4.0.3182. Product version: 5.4.0+4d45d445601312040107cbe2ac00e56c4bf4a60b. GlobalAssemblyCache: False
+2025-05-30 11:01:51.5788 Info Validating config: TargetNames=allfile, lifetimeConsole, ownFile-web, ConfigItems=54, FilePath=/home/rickleo/RiderProjects/Esercizio15052025/Esercizio15052025_BackEnd/bin/Debug/net8.0/nlog.config
+2025-05-30 11:01:51.5872 Info Configuration initialized.
+2025-05-30 11:02:03.5308 Info Shutdown() called. Logger closing...
+2025-05-30 11:02:03.5308 Info Closing old configuration.
+2025-05-30 11:02:03.5439 Info Logger has been closed down.
+2025-05-30 11:02:03.6221 Info AppDomain Shutting down. LogFactory closing...
+2025-05-30 11:02:03.6229 Info LogFactory has been closed.
+2025-05-30 11:02:04.4693 Info Registered target NLog.Targets.FileTarget(Name=allfile)
+2025-05-30 11:02:04.4808 Info Registered target NLog.Targets.FileTarget(Name=ownFile-web)
+2025-05-30 11:02:04.4808 Info Registered target NLog.Targets.ConsoleTarget(Name=lifetimeConsole)
+2025-05-30 11:02:04.4855 Info NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 5.4.0.3182. Product version: 5.4.0+4d45d445601312040107cbe2ac00e56c4bf4a60b. GlobalAssemblyCache: False
+2025-05-30 11:02:04.4915 Info Validating config: TargetNames=allfile, lifetimeConsole, ownFile-web, ConfigItems=54, FilePath=/home/rickleo/RiderProjects/Esercizio15052025/Esercizio15052025_BackEnd/bin/Debug/net8.0/nlog.config
+2025-05-30 11:02:04.5002 Info Configuration initialized.
+2025-05-30 11:02:18.5744 Info Shutdown() called. Logger closing...
+2025-05-30 11:02:18.5744 Info Closing old configuration.
+2025-05-30 11:02:18.5824 Info Logger has been closed down.
+2025-05-30 11:02:18.6668 Info AppDomain Shutting down. LogFactory closing...
+2025-05-30 11:02:18.6678 Info LogFactory has been closed.
