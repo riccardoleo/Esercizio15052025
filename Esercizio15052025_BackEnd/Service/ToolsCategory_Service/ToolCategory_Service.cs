@@ -192,7 +192,7 @@ namespace Esercizio15052025.Service.ToolsCategory_Service
             await _repo.UpdateAsync(entity);
 
             result.success = 200;
-            result.toolCategory_DTO = _mapper.Map<TC_DTO>(dto);
+            result.toolCategory_DTO = _mapper.Map<TC_DTO>(entity);
             result.message = ("🔥 toolCatoegory aggiornato con successo");
             return result;
         }
@@ -218,7 +218,7 @@ namespace Esercizio15052025.Service.ToolsCategory_Service
             await _repo.DeleteAsync(entity);
 
             result.success = 200;
-            result.toolCategory_DTO = _mapper.Map<TC_DTO>(dto);
+            result.toolCategory_DTO = _mapper.Map<TC_DTO>(entity);
             result.message = ("🔥 tool eliminato con successo");
             return result;
         }

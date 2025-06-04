@@ -1,0 +1,258 @@
+<!-- <p>tool works!</p> -->
+
+<div class="tool-component-container">
+  <!-- Header -->
+  <div class="header">
+    <div class="title-section">
+      <h1>🔧 Tools</h1>
+      <p>Gestione strumenti – Utente: <strong>{{ userName }}</strong></p>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-secondary" (click)="goToDashboard()">🏠 Dashboard</button>
+      <button class="btn btn-danger" (click)="logout()">🚪 Logout</button>
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="action-buttons">
+    <button class="btn btn-primary" (click)="showForm('list')" [class.active]="activeForm === 'list'">📋 Lista Tools</button>
+    <button class="btn btn-info" (click)="showForm('search')" [class.active]="activeForm === 'search'">🔍 Cerca per ID</button>
+    <button class="btn btn-success" (click)="showForm('create')" [class.active]="activeForm === 'create'">➕ Crea Nuovo</button>
+    <button class="btn btn-warning" (click)="showForm('update')" [class.active]="activeForm === 'update'">✏️ Modifica</button>
+    <button class="btn btn-danger" (click)="showForm('delete')" [class.active]="activeForm === 'delete'">🗑️ Elimina</button>
+  </div>
+
+  <!-- Loading Indicator -->
+  <div *ngIf="loading" class="loading">
+    <div class="spinner"></div>
+    <p>Caricamento in corso...</p>
+  </div>
+
+  <!-- Lista Tools -->
+  <div *ngIf="activeForm === 'list' && !loading" class="form-section">
+    <div class="form-header">
+      <h3>📋 Lista Tools</h3>
+      <button class="btn-close" (click)="hideForm()">×</button>
+    </div>
+    <div class="list-container">
+      <div class="list-actions">
+        <div class="total-count">
+          Totale: {{ totalCount }} tools
+        </div>
+        <button class="btn btn-primary btn-sm" (click)="loadTools()">🔄 Ricarica</button>
+      </div>
+
+      <div *ngIf="tools.length > 0; else noTools" class="tools-grid">
+        <div *ngFor="let tool of tools" class="tool-card">
+          <div class="card-header">
+            <h4>{{ tool.name }}</h4>
+            <span class="card-id">ID: {{ tool?.toolId }}</span>
+          </div>
+          <div class="card-body">
+            <p><strong>Descrizione:</strong> {{ tool.description }}</p>
+            <p><strong>Data creazione:</strong> {{ formatDate(tool.creationDate) }}</p>
+            <p><strong>Categoria ID:</strong> {{ tool?.categoryId }}</p>
+            <p><strong>Componente ID:</strong> {{ tool?.plantComponentId }}</p>
+          </div>
+          <div class="card-actions">
+            <button class="btn btn-warning btn-sm" (click)="fillUpdateForm(tool)">✏️ Modifica</button>
+          </div>
+        </div>
+      </div>
+
+      <ng-template #noTools>
+        <div class="no-data">
+          <p>Nessun tool trovato</p>
+        </div>
+      </ng-template>
+
+      <!-- Pagination -->
+      <div *ngIf="getTotalPages() > 1" class="pagination">
+        <button class="btn btn-secondary btn-sm" 
+                (click)="goToPage(currentPage - 1)" 
+                [disabled]="currentPage <= 1">
+          ◀ Precedente
+        </button>
+        <div class="page-info">
+          Pagina {{ currentPage }} di {{ getTotalPages() }}
+        </div>
+        <button class="btn btn-secondary btn-sm" 
+                (click)="goToPage(currentPage + 1)" 
+                [disabled]="currentPage >= getTotalPages()">
+          Successiva ▶
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cerca Tool per ID -->
+  <div *ngIf="activeForm === 'search' && !loading" class="form-section">
+    <div class="form-header">
+      <h3>🔍 Cerca Tool per ID</h3>
+      <button class="btn-close" (click)="hideForm()">×</button>
+    </div>
+    <form (ngSubmit)="getSingleTool()">
+      <div class="form-group">
+        <label for="searchId">ID Tool:</label>
+        <input type="number" 
+               id="searchId" 
+               class="form-control" 
+               [(ngModel)]="searchId" 
+               name="searchId" 
+               placeholder="Inserisci l'ID del tool da cercare"
+               required>
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" (click)="hideForm()">Annulla</button>
+        <button type="submit" class="btn btn-info" [disabled]="!searchId">🔍 Cerca</button>
+      </div>
+    </form>
+
+    <!-- Risultato ricerca -->
+    <div *ngIf="selectedTool" class="search-result">
+      <h4>Risultato ricerca:</h4>
+      <div class="result-card">
+        <h5>{{ selectedTool.name }}</h5>
+        <p><strong>ID:</strong> {{ selectedTool.toolId }}</p>
+        <p><strong>Descrizione:</strong> {{ selectedTool.description }}</p>
+        <p><strong>Data creazione:</strong> {{ formatDate(selectedTool.creationDate) }}</p>
+        <p><strong>Categoria ID:</strong> {{ selectedTool.categoryId }}</p>
+        <p><strong>Componente ID:</strong> {{ selectedTool.plantComponentId }}</p>
+        <div class="card-actions">
+          <button class="btn btn-warning btn-sm" (click)="fillUpdateForm(selectedTool)">✏️ Modifica</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Crea Nuovo Tool -->
+  <div *ngIf="activeForm === 'create' && !loading" class="form-section">
+    <div class="form-header">
+      <h3>➕ Crea Nuovo Tool</h3>
+      <button class="btn-close" (click)="hideForm()">×</button>
+    </div>
+    <form (ngSubmit)="createTool()">
+      <div class="form-group">
+        <label for="createName">Nome Tool: *</label>
+        <input type="text" 
+               id="createName" 
+               class="form-control" 
+               [(ngModel)]="createFormData.name" 
+               name="createName" 
+               placeholder="Nome del tool"
+               required>
+      </div>
+      <div class="form-group">
+        <label for="createDescription">Descrizione: *</label>
+        <textarea id="createDescription" 
+                  class="form-control" 
+                  [(ngModel)]="createFormData.description" 
+                  name="createDescription" 
+                  placeholder="Descrizione del tool"
+                  required></textarea>
+      </div>
+      <div class="form-group">
+        <label for="createCategoryId">ID Categoria: *</label>
+        <input type="number" 
+               id="createCategoryId" 
+               class="form-control" 
+               [(ngModel)]="createFormData.categoryId" 
+               name="createCategoryId" 
+               placeholder="ID della categoria"
+               required>
+      </div>
+      <div class="form-group">
+        <label for="createPlantComponentId">ID Componente Impianto: *</label>
+        <input type="number" 
+               id="createPlantComponentId" 
+               class="form-control" 
+               [(ngModel)]="createFormData.plantComponentId" 
+               name="createPlantComponentId" 
+               placeholder="ID del componente impianto"
+               required>
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" (click)="hideForm()">Annulla</button>
+        <button type="submit" class="btn btn-success">➕ Crea Tool</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Modifica Tool -->
+  <div *ngIf="activeForm === 'update' && !loading" class="form-section">
+    <div class="form-header">
+      <h3>✏️ Modifica Tool</h3>
+      <button class="btn-close" (click)="hideForm()">×</button>
+    </div>
+    <form (ngSubmit)="updateTool()">
+      <div class="form-group">
+        <label for="updateToolId">ID Tool: *</label>
+        <input type="number" 
+               id="updateToolId" 
+               class="form-control" 
+               [(ngModel)]="updateFormData.toolId" 
+               name="updateToolId" 
+               placeholder="ID del tool da modificare"
+               required>
+      </div>
+      <div class="form-group">
+        <label for="updateName">Nome Tool: *</label>
+        <input type="text" 
+               id="updateName" 
+               class="form-control" 
+               [(ngModel)]="updateFormData.name" 
+               name="updateName" 
+               placeholder="Nuovo nome del tool"
+               required>
+      </div>
+      <div class="form-group">
+        <label for="updateDescription">Descrizione: *</label>
+        <textarea id="updateDescription" 
+                  class="form-control" 
+                  [(ngModel)]="updateFormData.description" 
+                  name="updateDescription" 
+                  placeholder="Nuova descrizione del tool"
+                  required></textarea>
+      </div>
+      <div class="form-group">
+        <label for="updateCreationDate">Data Creazione:</label>
+        <input type="datetime-local" 
+               id="updateCreationDate" 
+               class="form-control" 
+               [(ngModel)]="updateFormData.creationDate" 
+               name="updateCreationDate">
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" (click)="hideForm()">Annulla</button>
+        <button type="submit" class="btn btn-warning">✏️ Aggiorna Tool</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Elimina Tool -->
+  <div *ngIf="activeForm === 'delete' && !loading" class="form-section">
+    <div class="form-header">
+      <h3>🗑️ Elimina Tool</h3>
+      <button class="btn-close" (click)="hideForm()">×</button>
+    </div>
+    <div class="warning-message">
+      ⚠️ <strong>Attenzione:</strong> L'eliminazione di un tool è un'operazione irreversibile!
+    </div>
+    <form (ngSubmit)="deleteTool()">
+      <div class="form-group">
+        <label for="deleteToolId">ID Tool da eliminare: *</label>
+        <input type="number" 
+               id="deleteToolId" 
+               class="form-control" 
+               [(ngModel)]="deleteFormData.toolId" 
+               name="deleteToolId" 
+               placeholder="ID del tool da eliminare"
+               required>
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" (click)="hideForm()">Annulla</button>
+        <button type="submit" class="btn btn-danger">🗑️ Elimina Tool</button>
+      </div>
+    </form>
+  </div>
+</div>

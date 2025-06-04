@@ -2,6 +2,6 @@
 {
     public class PC_DTO_Delete
     {
-        public int ComponentId { get; set; }
+        public int componentId { get; set; }
     }
 }

@@ -32,7 +32,7 @@ namespace Esercizio15052025.profile
                 .ForMember(dest => dest.Tools, opt => opt.Ignore());
 
             CreateMap<PC_DTO_Delete, PlantComponent>()
-                .ForMember(dest => dest.ComponentId, opt => opt.MapFrom(src => src.ComponentId))
+                .ForMember(dest => dest.ComponentId, opt => opt.MapFrom(src => src.componentId))
                 .ForMember(dest => dest.Name, opt => opt.Ignore())
                 .ForMember(dest => dest.Description, opt => opt.Ignore())
                 .ForMember(dest => dest.CreatedByUserId, opt => opt.Ignore())

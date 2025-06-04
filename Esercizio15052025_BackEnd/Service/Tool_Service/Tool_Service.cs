@@ -211,7 +211,7 @@ namespace Esercizio15052025.Service.Tool_Service
             await _repo.UpdateAsync(entity);
             
             result.success = 200;
-            result.tool_DTO = _mapper.Map<T_DTO>(dto);
+            result.tool_DTO = _mapper.Map<T_DTO>(entity);
             result.message = ("🔥 Tool aggiornato con successo");
             return result;
         }
@@ -237,7 +237,7 @@ namespace Esercizio15052025.Service.Tool_Service
             await _repo.DeleteAsync(entity);
 
             result.success = 200;
-            result.tool_DTO = _mapper.Map<T_DTO>(dto);
+            result.tool_DTO = _mapper.Map<T_DTO>(entity);
             result.message = ("🔥 tool eliminato con successo");
             return result;
         }

@@ -126,7 +126,7 @@ namespace Esercizio20052025.Service.User_Service
 
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, dto.Username),
+                new Claim(ClaimTypes.Name, dto.Username),
                 new Claim(ClaimTypes.Role, userInDb.Role)
             };
 
@@ -142,6 +142,7 @@ namespace Esercizio20052025.Service.User_Service
 
             var tokenString = new JwtSecurityTokenHandler().WriteToken(tokeOptions);
 
+            result.UserRole = userInDb.Role;
             result.success = 200;
             result.message = ("🔥 Utente loggato con successo");
             result.token = tokenString;
@@ -316,9 +317,11 @@ namespace Esercizio20052025.Service.User_Service
         /// </summary>
         /// <param name="userRole"></param>
         /// <returns></returns>
-        public UserResponseDTO CheckRole(String userRole)
+        public UserResponseDTO CheckRole(String userRole, String userName)
         {
             UserResponseDTO result = new UserResponseDTO();
+            User_DTO userDTO = new User_DTO();
+            var userInDb = _repo.ReturnUserByName(userName);
 
             userRole = userRole.ToLower();
 
@@ -333,6 +336,7 @@ namespace Esercizio20052025.Service.User_Service
             if(userRole.ToLower() == "admin")
             {
                 result.UserRole = "admin";
+                result.UserName = userInDb.Username;
                 result.success = 200;
                 result.message = ("🔥 L'utente e' admin");
                 return result;
@@ -340,6 +344,7 @@ namespace Esercizio20052025.Service.User_Service
             }else if(userRole.ToLower() == "user")
             {
                 result.UserRole = "user";
+                result.UserName = userInDb.Username;
                 result.success = 200;
                 result.message = ("🔥 L'utente e' user");
                 return result;

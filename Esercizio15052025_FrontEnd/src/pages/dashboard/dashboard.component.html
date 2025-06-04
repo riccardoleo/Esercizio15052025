@@ -1,0 +1,166 @@
+<div class="dashboard-container">
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="spinner"></div>
+    <p>Caricamento in corso...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="errorMessage && !isLoading" class="error-container">
+    <div class="error-icon">⚠️</div>
+    <h2>Errore</h2>
+    <p>{{ errorMessage }}</p>
+    <button (click)="reloadData()" class="retry-btn">Riprova</button>
+  </div>
+
+  <!-- Main Dashboard Content -->
+  <div *ngIf="!isLoading && !errorMessage" class="dashboard-content">
+    <!-- Header -->
+    <header class="dashboard-header">
+      <div class="header-content">
+        <h1>Dashboard</h1>
+        <div class="user-info">
+          <span *ngIf="userName" class="user-name">
+            🙋‍♂️ {{ userName }}
+          </span>
+          <span *ngIf="userRole" class="user-role">
+            👤 Ruolo: <strong>{{ userRole }}</strong>
+          </span>
+          <button (click)="logout()" class="logout-btn">
+            🚪 Logout
+          </button>
+          <button (click)="navigateTo('/settings')" class="settings-btn">
+            ⚙️ Settings
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <div class="welcome-section">
+        <h2>Benvenuto nella tua Dashboard!</h2>
+        <p>Gestisci le tue attività e visualizza le informazioni importanti.</p>
+      </div>
+
+      <!-- Cards Section -->
+      <div class="cards-grid">
+        <div class="card" (click)="navigateTo('/plant-component')">
+          <div class="card-icon">🛠️</div>
+          <h3>Plant Component</h3>
+          <p>Gestisci i componenti delle piante</p>
+        </div>
+
+        <div class="card" (click)="navigateTo('/tool')">
+          <div class="card-icon">🔧</div>
+          <h3>Tool</h3>
+          <p>Gestisci gli strumenti e attrezzature</p>
+        </div>
+
+        <div class="card" (click)="navigateTo('/tool-category')">
+          <div class="card-icon">📂</div>
+          <h3>Tool Category</h3>
+          <p>Organizza le categorie degli strumenti</p>
+        </div>
+      </div>
+      
+      <!-- User Role Specific Content -->
+      <div *ngIf="userRole" class="role-specific-content">
+        <h3>Funzionalità per il ruolo: {{ userRole }}</h3>
+        <div class="role-actions">
+          <div *ngIf="isAdmin()" class="admin-section">
+            <h4>🔧 Pannello Amministratore</h4>
+            <ul>
+              <li>Gestione completa utenti</li>
+            </ul>
+          </div>
+          
+          <div *ngIf="!isAdmin()" class="user-section">
+            <h4>👤 Pannello Utente</h4>
+            <ul>
+              <li>Visualizzazione dati personali</li>
+              <li>Report limitati</li>
+              <li>Modifica profilo</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sezione Admin-only con bottoni aggiuntivi -->
+      <div *ngIf="isAdmin()" class="admin-only-section">
+        <h3>🔧 Pannello Amministratore</h3>
+        <div class="admin-buttons">
+          <button class="admin-btn primary" (click)="viewAllUsers()">
+            {{ showUsersList ? '🔼 Nascondi Lista Utenti' : '👥 Visualizza Tutti gli Utenti' }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Lista Utenti (Admin Only) -->
+      <div *ngIf="isAdmin() && showUsersList" class="users-list-section">
+        <div class="users-header">
+          <h3>👥 Lista Utenti</h3>
+          <button class="btn-close" (click)="hideUsersList()">×</button>
+        </div>
+
+        <!-- Loading Users -->
+        <div *ngIf="loadingUsers" class="loading-users">
+          <div class="spinner"></div>
+          <p>Caricamento utenti...</p>
+        </div>
+
+        <!-- Users List -->
+        <div *ngIf="!loadingUsers" class="users-container">
+          <div class="list-actions">
+            <div class="total-count">
+              Totale: {{ totalUsersCount }} utenti
+            </div>
+            <button class="btn btn-primary btn-sm" (click)="loadUsers()">🔄 Ricarica</button>
+          </div>
+
+          <div *ngIf="users.length > 0; else noUsers" class="users-grid">
+            <div *ngFor="let user of users" class="user-card">
+              <div class="card-header">
+                <h4>{{ user.username }}</h4>
+                <p><strong>ID: </strong> {{ user?.userId }}</p>
+              </div>
+              <div class="card-body">
+                <p><strong>Email: </strong> {{ user.email }}</p>
+                <p><strong>Ruolo: </strong> {{ user.role }} </p>
+                <p *ngIf="user.isActive !== undefined">
+                  <strong>Stato:</strong> 
+                  <span class="status-badge" [class.active]="user.isActive" [class.inactive]="!user.isActive">
+                    {{ user.isActive ? 'Attivo' : 'Inattivo' }}
+                  </span>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <ng-template #noUsers>
+            <div class="no-data">
+              <p>Nessun utente trovato</p>
+            </div>
+          </ng-template>
+
+          <!-- Pagination -->
+          <div *ngIf="getTotalUsersPages() > 1" class="pagination">
+            <button class="btn btn-secondary btn-sm" 
+                    (click)="goToUsersPage(currentPage - 1)" 
+                    [disabled]="currentPage <= 1">
+              ◀ Precedente
+            </button>
+            <div class="page-info">
+              Pagina {{ currentPage }} di {{ getTotalUsersPages() }}
+            </div>
+            <button class="btn btn-secondary btn-sm" 
+                    (click)="goToUsersPage(currentPage + 1)" 
+                    [disabled]="currentPage >= getTotalUsersPages()">
+              Successiva ▶
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>

@@ -1,0 +1,231 @@
+<div class="plant-component-container">
+  <!-- Header -->
+  <div class="header">
+    <div class="title-section">
+      <h1>🛠️ Plant Components</h1>
+      <p>Gestione componenti delle piante – Utente: <strong>{{ userName }}</strong></p>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-secondary" (click)="goToDashboard()">🏠 Dashboard</button>
+      <button class="btn btn-danger"    (click)="logout()">🚪 Logout</button>
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="action-buttons">
+    <button class="btn btn-primary" (click)="showForm('list')"  [class.active]="activeForm === 'list'">📋 Lista Plant Components</button>
+    <button class="btn btn-info"    (click)="showForm('search')" [class.active]="activeForm === 'search'">🔍 Cerca per ID</button>
+    <button class="btn btn-success" (click)="showForm('create')" [class.active]="activeForm === 'create'">➕ Crea Nuovo</button>
+    <button class="btn btn-warning" (click)="showForm('update')" [class.active]="activeForm === 'update'">✏️ Aggiorna</button>
+    <button class="btn btn-danger"  (click)="showForm('delete')" [class.active]="activeForm === 'delete'">🗑️ Elimina</button>
+  </div>
+
+  <!-- Loading Indicator -->
+  <div class="loading" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Caricamento in corso...</p>
+  </div>
+
+  <!-- Lista Plant Components -->
+  <div class="form-section" *ngIf="activeForm === 'list' && !loading">
+    <div class="form-header">
+      <h3>📋 Lista Plant Components</h3>
+      <button class="btn-close" (click)="hideForm()">✕</button>
+    </div>
+    
+    <div class="list-container">
+      <div class="list-actions">
+        <button class="btn btn-primary" (click)="loadPlantComponents()">🔄 Ricarica Lista</button>
+        <span class="total-count">Totale: {{ totalCount }} elementi</span>
+      </div>
+
+      <div class="plant-components-grid" *ngIf="plantComponents.length > 0">
+        <div class="plant-component-card" *ngFor="let pc of plantComponents">
+          <div class="card-header">
+            <h4>{{ pc.name }}</h4>
+            <span class="card-id">ID: {{ pc?.componentId }} </span>
+          </div>
+          <div class="card-body">
+            <p>{{ pc.description }}</p>
+          </div>
+          <div class="card-actions">
+            <button class="btn btn-sm btn-warning" (click)="fillUpdateForm(pc)">✏️ Modifica</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="no-data" *ngIf="plantComponents.length === 0">
+        <p>Nessun Plant Component trovato</p>
+      </div>
+
+      <!-- Paginazione -->
+      <div class="pagination" *ngIf="getTotalPages() > 1">
+        <button class="btn btn-sm" (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1">⬅️ Precedente</button>
+        <span class="page-info">Pagina {{ currentPage }} di {{ getTotalPages() }}</span>
+        <button class="btn btn-sm" (click)="goToPage(currentPage + 1)" [disabled]="currentPage === getTotalPages()">Successiva ➡️</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Form Ricerca per ID -->
+  <div class="form-section" *ngIf="activeForm === 'search' && !loading">
+    <div class="form-header">
+      <h3>🔍 Cerca Plant Component</h3>
+      <button class="btn-close" (click)="hideForm()">✕</button>
+    </div>
+    
+    <form (ngSubmit)="getSinglePlantComponent()" #searchForm="ngForm">
+      <div class="form-group">
+        <label for="searchId">ID Plant Component:</label>
+        <input
+          type="number"
+          id="searchId"
+          name="searchId"
+          [(ngModel)]="searchId"
+          required
+          min="1"
+          class="form-control"
+          placeholder="Inserisci ID">
+      </div>
+      
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary" [disabled]="!searchForm.form.valid">🔍 Cerca</button>
+        <button type="button" class="btn btn-secondary" (click)="hideForm()">Annulla</button>
+      </div>
+    </form>
+
+    <!-- Risultato ricerca -->
+    <div class="search-result" *ngIf="selectedPlantComponent">
+      <h4>Risultato:</h4>
+      <div class="result-card">
+        <h5>{{ selectedPlantComponent.name }}</h5>
+        <p><strong>ID:</strong> {{ selectedPlantComponent.componentId }}</p>
+        <p><strong>Descrizione:</strong> {{ selectedPlantComponent.description }}</p>
+        <button class="btn btn-warning" (click)="fillUpdateForm(selectedPlantComponent)">✏️ Modifica questo elemento</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Form Creazione -->
+  <div class="form-section" *ngIf="activeForm === 'create' && !loading">
+    <div class="form-header">
+      <h3>➕ Crea Nuovo Plant Component</h3>
+      <button class="btn-close" (click)="hideForm()">✕</button>
+    </div>
+    
+    <form (ngSubmit)="createPlantComponent()" #createForm="ngForm">
+      <div class="form-group">
+        <label for="createName">Nome *:</label>
+        <input
+          type="text"
+          id="createName"
+          name="createName"
+          [(ngModel)]="createFormData.name"
+          required
+          class="form-control"
+          placeholder="Nome del Plant Component">
+      </div>
+      
+      <div class="form-group">
+        <label for="createDescription">Descrizione *:</label>
+        <textarea
+          id="createDescription"
+          name="createDescription"
+          [(ngModel)]="createFormData.description"
+          required
+          class="form-control"
+          rows="4"
+          placeholder="Descrizione del Plant Component"></textarea>
+      </div>
+      
+      <div class="form-actions">
+        <button type="submit" class="btn btn-success" [disabled]="!createForm.form.valid">➕ Crea Plant Component</button>
+        <button type="button" class="btn btn-secondary" (click)="hideForm()">Annulla</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Form Aggiornamento -->
+  <div class="form-section" *ngIf="activeForm === 'update' && !loading">
+    <div class="form-header">
+      <h3>✏️ Aggiorna Plant Component</h3>
+      <button class="btn-close" (click)="hideForm()">✕</button>
+    </div>
+    
+    <form (ngSubmit)="updatePlantComponent()" #updateForm="ngForm">
+      <div class="form-group">
+        <label for="updateId">ID:</label>
+        <input
+          type="number"
+          componentId="updateId"
+          name="updateId"
+          [(ngModel)]="updateFormData.componentId"
+          required
+          min="1"
+          class="form-control"
+          placeholder="ID del Plant Component">
+      </div>
+
+      <div class="form-group">
+        <label for="updateName">Nome:</label>
+        <input
+          type="text"
+          id="updateName"
+          name="updateName"
+          [(ngModel)]="updateFormData.name"
+          required
+          class="form-control"
+          placeholder="Nome del Plant Component">
+      </div>
+      
+      <div class="form-group">
+        <label for="updateDescription">Descrizione:</label>
+        <textarea
+          id="updateDescription"
+          name="updateDescription"
+          [(ngModel)]="updateFormData.description"
+          required
+          class="form-control"
+          rows="4"
+          placeholder="Descrizione del Plant Component"></textarea>
+      </div>
+      
+      <div class="form-actions">
+        <button type="submit" class="btn btn-warning" [disabled]="!updateForm.form.valid">✏️ Aggiorna Plant Component</button>
+        <button type="button" class="btn btn-secondary" (click)="hideForm()">Annulla</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Form Eliminazione -->
+  <div class="form-section" *ngIf="activeForm === 'delete' && !loading">
+    <div class="form-header">
+      <h3>🗑️ Elimina Plant Component</h3>
+      <button class="btn-close" (click)="hideForm()">✕</button>
+    </div>
+    
+    <form (ngSubmit)="deletePlantComponent()" #deleteForm="ngForm">
+      <div class="form-group">
+        <label for="deleteId">ID Plant Component da eliminare *:</label>
+        <input
+          type="number"
+          id="deleteId"
+          name="deleteId"
+          [(ngModel)]="deleteFormData.componentId"
+          required
+          min="1"
+          class="form-control"
+          placeholder="ID del Plant Component">
+      </div>
+      
+      <div class="warning-message">
+        ⚠️ <strong>Attenzione:</strong> Questa operazione è irreversibile!
+      </div>
+      
+      <div class="form-actions">
+        <button type="submit" class="btn btn-danger" [disabled]="!deleteForm.form.valid">🗑️ Elimina Plant Component</button>
+        <button type="button" class="btn btn-secondary" (click)="hideForm()">Annulla</button>
+      </div>
+    </form>
+  </div>
+</div>

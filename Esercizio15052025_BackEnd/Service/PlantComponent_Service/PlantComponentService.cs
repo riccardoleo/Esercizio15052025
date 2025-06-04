@@ -183,7 +183,7 @@ namespace Esercizio15052025.Service.PlantComponent_Service
             await _repo.UpdateAsync(entity);
 
             result.success = 200;
-            result.PC_DTO = _mapper.Map<PC_DTO>(dto);
+            result.PC_DTO = _mapper.Map<PC_DTO>(entity);
             result.message = ("🔥 Plant Component aggiornato con successo");
             return result;
         }
@@ -197,7 +197,7 @@ namespace Esercizio15052025.Service.PlantComponent_Service
         {
             PlantComponent_Response result = new PlantComponent_Response();
 
-            if (dto.ComponentId == 0)
+            if (dto.componentId == 0)
             {
                 Logger.Warn("[PC06A1] ID plant component non validi");
                 result.success = 204;
@@ -209,7 +209,7 @@ namespace Esercizio15052025.Service.PlantComponent_Service
             await _repo.DeleteAsync(entity);
 
             result.success = 200;
-            result.PC_DTO = _mapper.Map<PC_DTO>(dto);
+            result.PC_DTO = _mapper.Map<PC_DTO>(entity);
             result.message = ("🔥 Plant Component eliminato con successo");
             return result;
         }

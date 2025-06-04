@@ -1,17 +1,8 @@
-﻿using Esercizio15052025.DTO.Tool_DTO;
-using Esercizio15052025.Models;
-using Esercizio20052025.DTO.Users_DTO;
-using Esercizio20052025.Models;
-using Esercizio20052025.Repository.User_Repo.Interfaces;
+﻿using Esercizio20052025.DTO.Users_DTO;
 using Esercizio20052025.Service.User_Service.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using System;
-using System.IdentityModel.Tokens.Jwt;
-using System.Runtime.CompilerServices;
 using System.Security.Claims;
-using System.Text;
 
 namespace Esercizio20052025.Controllers
 {
@@ -108,7 +99,7 @@ namespace Esercizio20052025.Controllers
         {
             UserResponseDTO result = new UserResponseDTO();
 
-            await _userService.UpdateAsync(dto);
+            result = await _userService.UpdateAsync(dto);
             return result.success switch
             {
                 200 => Ok(result),
@@ -124,7 +115,7 @@ namespace Esercizio20052025.Controllers
         {
             UserResponseDTO result = new UserResponseDTO();
 
-            await _userService.DeleteAsync(dto);
+            result = await _userService.DeleteAsync(dto);
             return result.success switch
             {
                 200 => Ok(result),
@@ -143,7 +134,10 @@ namespace Esercizio20052025.Controllers
             var userRole = HttpContext.User.Claims
                 .FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
 
-            var response = _userService.CheckRole(userRole);
+            var userName = HttpContext.User.Claims
+                .FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+
+            result = _userService.CheckRole(userRole, userName);
 
             return result.success switch
             {

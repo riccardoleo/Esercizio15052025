@@ -1,4 +1,4 @@
-using Esercizio15052025.Models;
+Ôªøusing Esercizio15052025.Models;
 using Esercizio15052025.profile;
 using Esercizio15052025.Repository.PlantComponent_Repo;
 using Esercizio15052025.Repository.PlantComponent_Repo.Interfaces;
@@ -53,17 +53,20 @@ try
         };
     });
 
-    // CORS per React
+    // CORS per Angular
     builder.Services.AddCors(options =>
     {
-        options.AddPolicy("AllowLocalhostReact", policy =>
+        options.AddPolicy("AllowAll", policy =>
         {
-            policy.WithOrigins("http://localhost:54949")
+            policy.AllowAnyOrigin()  // ‚ö†Ô∏è PERICOLOSO - accetta da qualsiasi dominio
                   .AllowAnyHeader()
-                  .AllowAnyMethod()
-                  .AllowCredentials();
+                  .AllowAnyMethod();
+            // Nota: non puoi usare AllowCredentials() con AllowAnyOrigin()
         });
     });
+
+    // Non dimenticare di usare la policy nel middleware
+
 
     // DbContext
     builder.Services.AddDbContext<EQUIPPINGContext>(options =>
@@ -94,10 +97,10 @@ try
         app.UseSwaggerUI();
     }
 
-    app.UseCors("AllowLocalhostReact");
+    app.UseCors("AllowAll");
     app.UseHttpsRedirection();
-    app.UseAuthentication();  // <ó Prima líautenticazione
-    app.UseAuthorization();   // <ó Poi líautorizzazione
+    app.UseAuthentication();  // <‚Äî Prima l‚Äôautenticazione
+    app.UseAuthorization();   // <‚Äî Poi l‚Äôautorizzazione
 
     app.MapControllers();
     app.Run();

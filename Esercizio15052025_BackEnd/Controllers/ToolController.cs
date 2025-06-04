@@ -92,7 +92,7 @@ namespace Esercizio15052025.Controllers
             
             userResponseDTO = _userService.UserIDFromUserName(username);
             dto.CreatedByUserId = userResponseDTO.UserId;
-            await _toolService.AddAsync(dto);
+            result =await _toolService.AddAsync(dto);
             return result.success switch
             {
                 200 => Ok(result),
@@ -111,7 +111,7 @@ namespace Esercizio15052025.Controllers
             
             userResponseDTO = _userService.UserIDFromUserName(username);
             dto.CreatedByUserId = userResponseDTO.UserId;
-            await _toolService.UpdateAsync(dto);
+            result = await _toolService.UpdateAsync(dto);
             return result.success switch
             {
                 200 => Ok(result),

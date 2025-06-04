@@ -11,6 +11,6 @@ namespace Esercizio20052025.Service.User_Service.Interfaces
         Task<UserResponseDTO> DeleteAsync(UserCredential_DTO entity);
         UserResponseDTO Login(UserCredential_DTO dto);
         UserResponseDTO UserIDFromUserName(string username);
-        UserResponseDTO CheckRole(String userRole);
+        UserResponseDTO CheckRole(String userRole, String userName);
     }
 }
