@@ -3,6 +3,8 @@ using Esercizio15052025.DTO.PlantComponent_DTO;
 using Esercizio15052025.DTO.Tool_DTO;
 using Esercizio15052025.DTO.ToolCategory_DTO;
 using Esercizio15052025.Models;
+using Esercizio20052025.DTO.ListPermission_DTO;
+using Esercizio20052025.DTO.ListVisibility_DTO;
 using Esercizio20052025.DTO.Users_DTO;
 
 namespace Esercizio15052025.profile
@@ -133,6 +135,15 @@ namespace Esercizio15052025.profile
                 .ForMember(dest => dest.PlantComponents, opt => opt.Ignore())
                 .ForMember(dest => dest.ToolCategories, opt => opt.Ignore())
                 .ForMember(dest => dest.Tools, opt => opt.Ignore());
+
+            // List Visibility
+            CreateMap<ListVisibility_DTO, ListVisibilityId>();
+            CreateMap<ListVisibilityId, ListVisibility_DTO>();
+
+            // List Permission
+            CreateMap<ListPermission_DTO, ListPermissionId>();
+            CreateMap<ListPermissionId, ListPermission_DTO>();
+
         }
     }
 }

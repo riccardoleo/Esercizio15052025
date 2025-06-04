@@ -1,22 +1,23 @@
 ﻿using AutoMapper;
 using Esercizio15052025.Models;
-using Esercizio15052025.Service.Check_Service;
+using Esercizio20052025.DTO.ListVisibility_DTO;
 using Esercizio20052025.DTO.Users_DTO;
+using Esercizio20052025.Repository.LVisibility_Repo.Interfaces;
 using Esercizio20052025.Repository.User_Repo.Interfaces;
+using Esercizio20052025.Service.LVisibility_Service.Interfaces;
 using Esercizio20052025.Service.User_Service.Interfaces;
-using Microsoft.Extensions.ObjectPool;
 using Microsoft.IdentityModel.Tokens;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
 namespace Esercizio20052025.Service.User_Service
 {
-    public class User_Service(IUser_Repo repo, IMapper mapper) : IUser_Service
+    public class User_Service(IUser_Repo repo,ILVisibility_Service visibility_Service , IMapper mapper) : IUser_Service
     {
         private readonly IUser_Repo _repo = repo;
         private readonly IMapper _mapper = mapper;
+        private readonly ILVisibility_Service _visibility_Service = visibility_Service;
 
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -355,5 +356,37 @@ namespace Esercizio20052025.Service.User_Service
             result.message = ("🚠🥀 Ruolo utente non valido");
             return result;
         }
+
+        /// <summary>
+        /// [US09] Aggiunge i permessi di visibilita' all'utente
+        /// </summary>
+        /// <param name="UserID"></param>
+        /// <param name="PermissionID"></param>
+        /// <returns></returns>
+        public async Task<UserResponseDTO> AddVisibility(int UserID, int PermissionID)
+        {
+            UserResponseDTO result = new UserResponseDTO();
+            ListVisibility_DTO listVisibilityDTO = new ListVisibility_DTO();
+
+            if (UserID == 0 || PermissionID == 0)
+            {
+                Logger.Warn("[US09A3] Dati utente non validi");
+                result.success = 204;
+                result.message = ("[US09A3] 🚠🥀 Dati utente non validi");
+                return result;
+            }
+
+            listVisibilityDTO.UserId = UserID;
+            listVisibilityDTO.PermissionId = PermissionID;
+
+
+            _visibility_Service.AddAsync(listVisibilityDTO);
+
+            result.success = 200;
+            result.message = ("🔥 Permessi aggiunti con successo");
+            return result;
+
+        }
+
     }
 }

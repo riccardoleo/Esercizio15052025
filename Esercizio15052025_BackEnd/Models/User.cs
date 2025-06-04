@@ -19,6 +19,10 @@ public partial class User
 
     public string Role { get; set; }
 
+    public virtual ICollection<ListPermissionId> ListPermissionIds { get; set; } = new List<ListPermissionId>();
+
+    public virtual ICollection<ListVisibilityId> ListVisibilityIds { get; set; } = new List<ListVisibilityId>();
+
     public virtual ICollection<PlantComponent> PlantComponents { get; set; } = new List<PlantComponent>();
 
     public virtual ICollection<ToolCategory> ToolCategories { get; set; } = new List<ToolCategory>();

@@ -63,11 +63,11 @@ namespace Esercizio15052025.Service.PlantComponent_Service
         /// <param name="index"></param>
         /// <param name="block"></param>
         /// <returns></returns>
-        public async Task<PlantComponent_Response> GetAllPlantComponentsByUserAsync(int userID, int index, int block)
+        public async Task<PlantComponent_Response> GetAllPlantComponentsByUserAsync(int userID, int index, int block, List<int> permissionID)
         {
             PlantComponent_Response result = new PlantComponent_Response();
 
-            var entities = await _repo.GetPlantComponentsByUserAsync(userID, index, block);
+            var entities = await _repo.GetPlantComponentsByUserAsync(userID, index, block, permissionID);
 
             if (entities == null)
             {

@@ -12,7 +12,7 @@ namespace Esercizio15052025.Repository.PlantComponent_Repo.Interfaces
         Task DeleteAsync(PlantComponent entity);
         bool ExistsByName(string name);
         Task<bool> IsPlantComponentOwnedByUserAsync(int plantComponentId, int userID);
-        Task<List<PlantComponent>> GetPlantComponentsByUserAsync(int userID, int index, int block);
+        Task<List<PlantComponent>> GetPlantComponentsByUserAsync(int userID, int index, int block, List<int> permissionID);
 
 
     }

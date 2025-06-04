@@ -13,6 +13,10 @@ public partial class EQUIPPINGContext : DbContext
     {
     }
 
+    public virtual DbSet<ListPermissionId> ListPermissionIds { get; set; }
+
+    public virtual DbSet<ListVisibilityId> ListVisibilityIds { get; set; }
+
     public virtual DbSet<PlantComponent> PlantComponents { get; set; }
 
     public virtual DbSet<Tool> Tools { get; set; }
@@ -23,6 +27,30 @@ public partial class EQUIPPINGContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<ListPermissionId>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__ListPerm__3214EC0730647C9D");
+
+            entity.ToTable("ListPermissionID");
+
+            entity.HasOne(d => d.User).WithMany(p => p.ListPermissionIds)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ListPermissionID_Users");
+        });
+
+        modelBuilder.Entity<ListVisibilityId>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__ListPerm__3214EC0750249D5E");
+
+            entity.ToTable("ListVisibilityID");
+
+            entity.HasOne(d => d.User).WithMany(p => p.ListVisibilityIds)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ListVisibilityID_Users");
+        });
+
         modelBuilder.Entity<PlantComponent>(entity =>
         {
             entity.HasKey(e => e.ComponentId).HasName("PK__PlantCom__D79CF04EA745BDF4");
