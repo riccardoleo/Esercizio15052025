@@ -7,6 +7,9 @@ namespace Esercizio15052025.Models;
 
 public partial class User
 {
+    // aggiungi dal db l'elemento "listPermissionID" dove verranno
+    // inseriti gli ID degli utenti di cui l'utente principale ha
+    // il permesso di guardare anche gli oggetti appartenenti agli utenti con quell'ID
     public int UserId { get; set; }
 
     public string Username { get; set; }
