@@ -54,14 +54,36 @@ namespace Esercizio20052025.Controllers
             };
         }
 
-        [HttpPost("")]
+        [HttpPost("AddAsync")]
         public async Task<IActionResult> AddAsync(int UserID, int PermissionID)
         {
+            LVisibilityResponse response = new();
 
+            response = await _lVisibility_Service.AddAsync(UserID, PermissionID);
+
+            return response.success switch
+            {
+                200 => Ok(response),
+                204 => NoContent(),
+                404 => NotFound(response),
+                _ => BadRequest(response),
+            };
         }
+
+        [HttpDelete("DeleteAsync")]
         public async Task<IActionResult> DeleteAsync(ListVisibility_DTO item)
         {
+            LVisibilityResponse response = new();
 
+            response = await _lVisibility_Service.DeleteAsync(item);
+
+            return response.success switch
+            {
+                200 => Ok(response),
+                204 => NoContent(),
+                404 => NotFound(response),
+                _ => BadRequest(response),
+            };
         }
     }
 }
