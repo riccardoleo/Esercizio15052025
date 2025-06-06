@@ -1,23 +1,22 @@
 ﻿using AutoMapper;
 using Esercizio15052025.DTO.PlantComponent_DTO;
-using Esercizio15052025.DTO.Tool_DTO;
 using Esercizio15052025.Models;
 using Esercizio15052025.Repository.PlantComponent_Repo.Interfaces;
-using Esercizio15052025.Service.Check_Service;
 using Esercizio15052025.Service.PlantComponent_Service.Interfaces;
 using Esercizio20052025.DTO.PlantComponent_DTO;
-using Microsoft.AspNetCore.Http.HttpResults;
+using Esercizio20052025.Repository.LPermission_Repo.Interfaces;
+using Esercizio20052025.Repository.LVisibility_Repo.Interfaces;
 using Microsoft.IdentityModel.Tokens;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Esercizio15052025.Service.PlantComponent_Service
 {
-    public class PlantComponentService(IPlantComponent_Repo repo, IMapper mapper) : IPlantComponentService
+    public class PlantComponentService(IPlantComponent_Repo repo, IMapper mapper, ILVisibility_Repo visibility_Repo, ILPermission_Repo permission_Repo) : IPlantComponentService
     {
         private readonly IPlantComponent_Repo _repo = repo;
         private readonly IMapper _mapper = mapper;
+        private readonly ILVisibility_Repo _visibility_Repo = visibility_Repo;
+        private readonly ILPermission_Repo _permission_Repo = permission_Repo;
+
 
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -63,9 +62,11 @@ namespace Esercizio15052025.Service.PlantComponent_Service
         /// <param name="index"></param>
         /// <param name="block"></param>
         /// <returns></returns>
-        public async Task<PlantComponent_Response> GetAllPlantComponentsByUserAsync(int userID, int index, int block, List<int> permissionID)
+        public async Task<PlantComponent_Response> GetAllPlantComponentsByUserAsync(int userID, int index, int block)
         {
             PlantComponent_Response result = new PlantComponent_Response();
+
+            List<int> permissionID = await _visibility_Repo.GetPermissionIdsByUserIdAsync(userID);
 
             var entities = await _repo.GetPlantComponentsByUserAsync(userID, index, block, permissionID);
 

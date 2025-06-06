@@ -22,7 +22,8 @@ namespace Esercizio20052025.Repository.LVisibility_Repo
 
         public async Task AddAsync(ListVisibilityId item)
         {
-            await _context.ListVisibilityIds.AddRangeAsync(item);
+            _context.ListVisibilityIds.AddRangeAsync(item);
+            await _context.SaveChangesAsync();
         }
         public async Task DeleteAsync(ListVisibilityId item)
         {

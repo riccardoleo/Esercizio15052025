@@ -380,7 +380,7 @@ namespace Esercizio20052025.Service.User_Service
             listVisibilityDTO.PermissionId = PermissionID;
 
 
-            _visibility_Service.AddAsync(listVisibilityDTO);
+            _visibility_Service.AddAsync(UserID, PermissionID);
 
             result.success = 200;
             result.message = ("🔥 Permessi aggiunti con successo");

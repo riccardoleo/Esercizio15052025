@@ -12,8 +12,17 @@ using Esercizio15052025.Service.Tool_Service;
 using Esercizio15052025.Service.Tool_Service.Interfeces;
 using Esercizio15052025.Service.ToolsCategory_Service;
 using Esercizio15052025.Service.ToolsCategory_Service.Interfaces;
+using Esercizio20052025.Controllers;
+using Esercizio20052025.Repository.LPermission_Repo;
+using Esercizio20052025.Repository.LPermission_Repo.Interfaces;
+using Esercizio20052025.Repository.LVisibility_Repo;
+using Esercizio20052025.Repository.LVisibility_Repo.Interfaces;
 using Esercizio20052025.Repository.User_Repo;
 using Esercizio20052025.Repository.User_Repo.Interfaces;
+using Esercizio20052025.Service.LPermission_Service;
+using Esercizio20052025.Service.LPermission_Service.Interfaces;
+using Esercizio20052025.Service.LVisibility_Service;
+using Esercizio20052025.Service.LVisibility_Service.Interfaces;
 using Esercizio20052025.Service.User_Service;
 using Esercizio20052025.Service.User_Service.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -82,6 +91,15 @@ try
     builder.Services.AddScoped<ITool_Service, Tool_Service>();
     builder.Services.AddScoped<IToolCategory_Service, ToolCategory_Service>();
     builder.Services.AddScoped<IUser_Service, User_Service>();
+    builder.Services.AddScoped<ILPermission_Repo, LPermission_Repo>();
+    // Repository
+    builder.Services.AddScoped<ILVisibility_Repo, LVisibility_Repo>();
+
+    // Service
+    builder.Services.AddScoped<ILVisibility_Service, LVisibility_Service>();
+    builder.Services.AddScoped<ILPermission_Service, LPermission_Service>();
+    builder.Services.AddScoped<ILPermission_Repo, LPermission_Repo>();
+
 
     // Controller, Swagger e AutoMapper
     builder.Services.AddControllers();

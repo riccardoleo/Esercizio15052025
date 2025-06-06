@@ -20,16 +20,25 @@ namespace Esercizio15052025.Repository.PlantComponent_Repo
 
         public async Task<List<PlantComponent>> GetPlantComponentsByUserAsync(int userID, int index, int block, List<int> permissionID)
         {
+            List<PlantComponent> x = new();
             List<PlantComponent> plantComponents = new();
 
-            plantComponents = await _context.PlantComponents
-                .Where(t => t.CreatedByUserId == userID)
+            permissionID.Add(userID);
+
+            for (int i = 0; i < permissionID.Count; i++)
+            {
+                int j = permissionID[i];
+
+                x = await _context.PlantComponents
+                .Where(t => t.CreatedByUserId == j)
                 .Skip((index - 1) * block)
                 .Take(block)
                 .ToListAsync();
 
-            plantComponents = 
+                plantComponents.AddRange(x);
+            }
 
+            return plantComponents;
         }
 
 

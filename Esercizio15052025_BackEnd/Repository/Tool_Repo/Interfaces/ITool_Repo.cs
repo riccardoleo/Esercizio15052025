@@ -10,7 +10,7 @@ namespace Esercizio15052025.Repository.Tool_Repo.Interfaces
         Task UpdateAsync(Tool tool);
         Task DeleteAsync(Tool tool);
         bool ExistsByName(string name);
-         Task<bool> IsToolOwnedByUserAsync(int toolId, int userID);
-        Task<List<Tool>> GetAllToolsByUserAsync(int userID, int index, int block);
+        Task<bool> IsToolOwnedByUserAsync(int toolId, int userID);
+        Task<List<Tool>> GetAllToolsByUserAsync(int userID, int index, int block, List<int> permissionID);
     }
 }

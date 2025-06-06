@@ -5,14 +5,16 @@ using Esercizio15052025.Repository.Tool_Repo.Interfaces;
 using Esercizio15052025.Service.Check_Service;
 using Esercizio15052025.Service.Tool_Service.Interfeces;
 using Esercizio20052025.DTO.Tool_DTO;
+using Esercizio20052025.Repository.LVisibility_Repo.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Esercizio15052025.Service.Tool_Service
 {
-    public class Tool_Service(ITool_Repo repo, IMapper mapper) : ITool_Service
+    public class Tool_Service(ITool_Repo repo, IMapper mapper, ILVisibility_Repo visibility_Repo) : ITool_Service
     {
         private readonly ITool_Repo _repo = repo;
         private readonly IMapper _mapper = mapper;
+        private readonly ILVisibility_Repo _visibility_Repo = visibility_Repo;
 
 
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
@@ -72,8 +74,10 @@ namespace Esercizio15052025.Service.Tool_Service
                 result.message = ("[TS02A1] 🚠🥀 index o block inserito non valido");
                 return result;
             }
-            
-            var entities = await _repo.GetAllToolsByUserAsync(userID, index, block);
+
+            List<int> permissionID = await _visibility_Repo.GetPermissionIdsByUserIdAsync(userID);
+
+            var entities = await _repo.GetAllToolsByUserAsync(userID, index, block, permissionID);
 
             if (entities == null)
             {

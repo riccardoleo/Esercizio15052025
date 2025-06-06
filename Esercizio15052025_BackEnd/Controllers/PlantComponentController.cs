@@ -41,7 +41,7 @@ namespace Esercizio15052025.Controllers
 
         // ▀▄▀▄▀▄  CHIAMATE Utente 👍  ▄▀▄▀▄▀ //
 
-        [Authorize]
+        //[Authorize]
         [HttpGet("getall/{index}/{block}")]
         public async Task<IActionResult> GetAll(int index, int block, string username)
         {
