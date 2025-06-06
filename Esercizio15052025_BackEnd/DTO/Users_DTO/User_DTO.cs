@@ -7,7 +7,10 @@
         public string PasswordHash { get; set; }
         public string Email { get; set; }
         public string? Role { get; set; }
+<<<<<<< HEAD
         //public List<int>? PermissionId { get; set; }
+=======
+>>>>>>> 954d2d285396fc9aa56baca36ead1c62b01bdf2f
         public string? passwdRole { get; set; }
         public DateTime CreatedAt { get; set; }
     }

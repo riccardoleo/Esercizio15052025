@@ -8,7 +8,7 @@
         public int success { get; set; }
         public int PermissionId { get; set; }
         public string? message { get; set; }
-        public List<ListPermission_DTO>? listPermission_DTOs { get; set; }
-        public required List<int> PermissionIdList { get; set; }
+        public List<ListPermission_DTO> listPermission_DTOs { get; set; }
+        public List<int> PermissionIdList { get; set; }
     }
 }

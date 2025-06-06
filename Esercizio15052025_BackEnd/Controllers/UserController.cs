@@ -24,16 +24,16 @@ namespace Esercizio20052025.Controllers
         [HttpGet("getAll/{index}/{block}")]
         public async Task<IActionResult> GetAll(int index, int block)
         {
-            UserResponseDTO result = new UserResponseDTO();
+            UserResponseDTO response = new UserResponseDTO();
 
-            result = await _userService.GetAllAsync(index, block);
+            response = await _userService.GetAllAsync(index, block);
 
-            return result.success switch
+            return response.success switch
             {
-                200 => Ok(result),
+                200 => Ok(response),
                 204 => NoContent(),
-                404 => NotFound(result),
-                _ => BadRequest(result),
+                404 => NotFound(response),
+                _ => BadRequest(response),
             };
         }
 

@@ -12,9 +12,12 @@ namespace Esercizio20052025.Repository.LPermission_Repo
         {
             return await _context.ListPermissionIds.ToListAsync();
         }
-        public async Task<ListPermissionId?> GetByIdAsync(int id)
+        public async Task<List<int>> GetPermissionIdsByUserIdAsync(int userId)
         {
-            return await _context.ListPermissionIds.FindAsync(id);
+            return await _context.ListPermissionIds
+                                 .Where(x => x.UserId == userId)
+                                 .Select(x => x.PermissionId)
+                                 .ToListAsync();
         }
         public async Task AddAsync(ListPermissionId item)
         {

@@ -13,28 +13,28 @@ namespace Esercizio20052025.Service.LVisibility_Service
 
         public async Task<LVisibilityResponse> GetAllAsync()
         {
-            LVisibilityResponse dto = new();
+            LVisibilityResponse response = new();
 
             List<ListVisibilityId> listVisibility = _repo.GetAllAsync().Result;
 
             if(listVisibility.Count == 0)
             {
-                dto.success = 404;
-                dto.message = "nessun elemento trovato";
-                return dto;
+                response.success = 404;
+                response.message = "nessun elemento trovato";
+                return response;
             }
 
-            dto.listVisibility_DTOs = _mapper.Map<List<ListVisibility_DTO>>(listVisibility);
-            dto.success = 200;
-            dto.message = "Lista ottenuta con successo";
-            return dto;
+            response.listVisibility_DTOs = _mapper.Map<List<ListVisibility_DTO>>(listVisibility);
+            response.success = 200;
+            response.message = "Lista ottenuta con successo";
+            return response;
         }
 
         public async Task<LVisibilityResponse?> GetByIdAsync(int id)
         {
             LVisibilityResponse dto = new();
 
-            if (id == 0 || id == null)
+            if (id == 0)
             {
                 dto.success = 204;
                 dto.message = "id inserito non valido";
